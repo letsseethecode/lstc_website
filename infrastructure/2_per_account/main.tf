@@ -11,8 +11,8 @@ provider "aws" {
 terraform {
   backend "s3" {
     encrypt              = false
-    region               = "us-east-1"
-    bucket               = "lstc-terraform-state"
+    region               = "eu-west-2"
+    bucket               = "lstc-terraform-state2"
     dynamodb_table       = "lstc-terraform-lock"
     key                  = "lstc-website-account"
     workspace_key_prefix = "lstc-website"
