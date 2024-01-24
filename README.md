@@ -8,6 +8,10 @@
 * Html
 * Javascript
 
+# Instructions
+
+## How to install
+
 # Architecture
 
 ## C4 Diagram
