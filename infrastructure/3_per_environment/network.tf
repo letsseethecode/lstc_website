@@ -1,3 +1,4 @@
+# We should create a custom VPC, rather than using the default
 resource "aws_vpc" "vpc" {
   cidr_block = "10.0.0.0/16"
   tags = {
@@ -5,8 +6,11 @@ resource "aws_vpc" "vpc" {
   }
 }
 
+# Lookup the availability zones rather than specifying them:
+#   eu-west-2a, eu-west-2b, eu-west-2c
 data "aws_availability_zones" "available" {}
 
+# A public subnet
 resource "aws_subnet" "public" {
   count = 1
   
@@ -19,6 +23,7 @@ resource "aws_subnet" "public" {
   }
 }
 
+# A private subet
 resource "aws_subnet" "private" {
   count = 1
   
