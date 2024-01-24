@@ -1,2 +1,4 @@
 *.bkp
 *~
+.terraform/
+.terraform.lock.hcl
