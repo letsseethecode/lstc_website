@@ -24,6 +24,10 @@
 
 ![C4 Diagram - Website](./docs/images/C4-C2%20-%20website.png)
 
+## Infrastructure
+
+![AWS Infrastructure](./docs/images/C4-AWS%20Components.drawio.png)
+
 # Features
 
 1. **As a** Visitor **I want to** register using github.com, so that I can authenticate
