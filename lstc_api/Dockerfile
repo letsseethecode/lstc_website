@@ -1,6 +1,7 @@
 ####################################################################################################
 ## Builder
 ####################################################################################################
+
 FROM rust:1.75 AS builder
 
 RUN rustup target add x86_64-unknown-linux-musl
@@ -34,6 +35,7 @@ RUN cargo build --release
 ## Final image
 ####################################################################################################
 
+# Bookworm is Debian 12, which inludes glibc compatibility with rust:1.75 (above)
 FROM debian:bookworm
 
 WORKDIR /app
@@ -41,7 +43,6 @@ EXPOSE 8080
 
 RUN apt-get update && \
     apt-get -y install curl && \
-#    apt-get install -y extra-runtime-dependencies && \
     rm -rf /var/lib/apt/lists/*
 
 # Import from builder.
