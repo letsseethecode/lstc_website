@@ -7,7 +7,7 @@ async fn echo(req_body: String) -> impl Responder {
 
 #[get("/health")]
 async fn health() -> impl Responder {
-    HttpResponse::Ok().body("OK")
+    HttpResponse::Ok().body("OK!")
 }
 
 async fn not_found() -> impl Responder {
