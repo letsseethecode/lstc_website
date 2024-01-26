@@ -2,7 +2,7 @@
 .DEFAULT=api--build
 
 SRC_FILES:=./lstc_api/src/main.rs
-GIT_HASH ?= $(shell git log --format="%h" -n 1)
+# GIT_HASH ?= $(shell git log --format="%h" -n 1)
 
 expect_%:
 	@ if [ "${${*}}" = "" ]; then \
