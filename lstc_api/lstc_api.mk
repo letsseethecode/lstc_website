@@ -17,7 +17,7 @@ lstc_api/target/release/lstc_api: $(SRC_FILES)
 api--build: lstc_api/target/release/lstc_api
 
 .cache/api--pack__%: expect_ECR api--build
-	touch $@
+	echo "Packing..."
 	docker build lstc_api/. -t "lstc_api:${*}" -t "${ECR}/lstc_api:${*}" && \
 	touch $@
 
