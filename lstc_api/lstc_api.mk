@@ -1,20 +1,17 @@
-.PHONY=api api--build api--pack api--publish expect_%
-.DEFAULT=api--build
+.PHONY=api api--build api--pack api--publish
 
 SRC_FILES:=./lstc_api/src/main.rs
 # GIT_HASH ?= $(shell git log --format="%h" -n 1)
 
-expect_%:
-	@ if [ "${${*}}" = "" ]; then \
-		echo "Environment variable $* not set"; \
-		exit 1; \
-	fi
+include utils.mk
+
+#
+# These are the proper targets for building and publishing the API
+#
 
 lstc_api/target/release/lstc_api: $(SRC_FILES)
 	cd lstc_api && \
 	cargo build --release
-
-api--build: lstc_api/target/release/lstc_api
 
 .cache/api--pack__%: expect_ECR api--build
 	echo "Packing..."
@@ -26,10 +23,16 @@ api--build: lstc_api/target/release/lstc_api
 	docker push "${ECR}/lstc_api:${*}" && \
 	touch $@
 
-api--pack: expect_VERSION .cache/api--pack__$(VERSION)
+#
+# These are the short-hand targets for the api, which are easier to use
+#
 
-api--publish: expect_VERSION .cache/api--publish__$(VERSION)
+api--build: lstc_api/target/release/lstc_api ## Compile the API
 
-api--clean:
+api--pack: expect_VERSION .cache/api--pack__$(VERSION) ## Build the Docker container
+
+api--publish: expect_VERSION .cache/api--publish__$(VERSION) ## Publish the API to ECR
+
+api--clean: ## Clean up the API files
 	rm -rf lstc_api/target/*
 	rm -f .cache/api--*
