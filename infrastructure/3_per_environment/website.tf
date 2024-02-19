@@ -1,5 +1,9 @@
+data "aws_route53_zone" "primary" {
+  name = "letsseethecode.com"
+}
+
 resource "aws_s3_bucket" "website" {
-  bucket = replace("${local.prefix}--website", "_", "-")
+  bucket = "${local.environment}.letsseethecode.com"
 }
 
 resource "aws_s3_bucket_public_access_block" "website" {
@@ -50,6 +54,17 @@ resource "aws_s3_bucket_website_configuration" "website" {
   #       replace_key_prefix_with = "documents/"
   #     }
   #   }
+}
+
+resource "aws_route53_record" "www" {
+  zone_id = data.aws_route53_zone.primary.id
+  name    = "${local.environment}.${data.aws_route53_zone.primary.name}"
+  type    = "A"
+  alias {
+    name                   = aws_s3_bucket_website_configuration.website.website_domain
+    zone_id                = aws_s3_bucket.website.hosted_zone_id
+    evaluate_target_health = false
+  }
 }
 
 resource "aws_s3_object" "file" {
