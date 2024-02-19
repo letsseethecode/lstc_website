@@ -12,6 +12,27 @@
 
 ## How to install
 
+
+Install the pre-requisites using.
+```sh
+make install
+```
+
+Build the project
+```sh
+make build
+```
+
+Generate the Terraform plan
+```sh
+make plan
+```
+
+Apply the Terraform plan
+```sh
+make apply
+```
+
 # Architecture
 
 ## C4 Diagram
