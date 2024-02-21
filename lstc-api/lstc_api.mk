@@ -27,15 +27,15 @@ lstc-api/target/release/lstc-api: $(SRC_FILES)
 # These are the short-hand targets for the api, which are easier to use
 #
 
-api--install:
+api--install:															## Install pre-requisites for lstc-api
 	echo "Not implemented"
 
-api--build: lstc-api/target/release/lstc-api ## Compile the API
-
-api--pack: expect_VERSION .cache/api--pack__$(VERSION) ## Build the Docker container
-
-api--publish: expect_VERSION .cache/api--publish__$(VERSION) ## Publish the API to ECR
-
-api--clean: ## Clean up the API files
+api--clean:																## Clean up the API files
 	rm -rf lstc-api/target/* &
 	rm -f .cache/api--*
+
+api--build: lstc-api/target/release/lstc-api							## Compile the API
+
+api--pack: expect_VERSION api-build .cache/api--pack__$(VERSION)		## Build the Docker container
+
+api--publish: expect_VERSION api-pack .cache/api--publish__$(VERSION)	## Publish the API to ECR

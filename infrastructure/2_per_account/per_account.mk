@@ -1,4 +1,4 @@
-.PHONY := per_account--init per_account--plan per_account--apply per_account--destroy
+.PHONY := per_account--clean per_account--init per_account--plan per_account--apply per_account--destroy
 SRC_FILES = $(shell find ./infrastructure/2_per_account -name "*.tf")
 
 per_account--clean:
@@ -9,7 +9,7 @@ per_account--init:
 	terraform init \
 		-var-file=./vars/${ACCOUNT}.tfvars
 
-infrastructure/2_per_account/per_account.tfplan: $(SRC_FILES) web--build
+infrastructure/2_per_account/per_account.tfplan: $(SRC_FILES)
 	cd infrastructure/2_per_account && \
 	terraform workspace select -or-create=true ${ACCOUNT} && \
 	terraform plan \
