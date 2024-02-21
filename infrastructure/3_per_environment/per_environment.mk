@@ -22,7 +22,14 @@ per_environment--apply: per_environment--plan
 	cd infrastructure/3_per_environment && \
 	terraform workspace select -or-create=true ${ENV} && \
 	terraform apply \
-		./per_environment.tfplan
+		./per_environment.tfplan && \
+	terraform output -json > ./output.json
+
+per_environment--output:
+	cd infrastructure/2_per_environment && \
+	terraform workspace select -or-create=true ${ACCOUNT} && \
+	terraform apply -refresh-only && \
+	terraform output -json > ./output.json
 
 per_environment--destroy:
 	cd infrastructure/3_per_environment && \

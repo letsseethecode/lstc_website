@@ -6,3 +6,7 @@ resource "aws_ecr_repository" "lstc" {
     scan_on_push = true
   }
 }
+
+output "ecr_url" {
+  value = aws_ecr_repository.lstc.repository_url
+}

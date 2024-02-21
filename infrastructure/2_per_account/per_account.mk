@@ -22,7 +22,14 @@ per_account--apply: per_account--plan
 	cd infrastructure/2_per_account && \
 	terraform workspace select -or-create=true ${ACCOUNT} && \
 	terraform apply \
-		./per_account.tfplan
+		./per_account.tfplan && \
+	terraform output -json > ./output.json
+
+per_account--output:
+	cd infrastructure/2_per_account && \
+	terraform workspace select -or-create=true ${ACCOUNT} && \
+	terraform apply -refresh-only && \
+	terraform output -json > ./output.json
 
 per_account--destroy:
 	cd infrastructure/2_per_account && \
