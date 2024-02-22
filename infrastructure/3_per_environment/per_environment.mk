@@ -12,7 +12,7 @@ per_environment--init:
 	terraform init \
 		-var-file=./vars/${ENV}.tfvars
 
-$(ENV_PLAN): $(SRC_FILES) $(BUILD_OUTPUT)
+$(ENV_PLAN): $(SRC_FILES) $(BUILD_OUTPUT) $(WEB_ASSETS)
 	cd ${dir $@} && \
 	terraform workspace select -or-create=true ${*} && \
 	terraform plan \

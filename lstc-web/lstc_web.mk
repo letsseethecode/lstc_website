@@ -1,5 +1,6 @@
 .PHONE 		:= web--clean web--build
 WEB_OUTPUT	:= lstc-web/dist/index.html
+WEB_ASSETS  := $(shell find lstc-web/dist)
 
 $(WEB_OUTPUT):
 	cd lstc-web && \
