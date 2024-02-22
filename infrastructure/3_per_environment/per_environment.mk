@@ -1,4 +1,4 @@
-.PHONY := per_environment--clean per_environment--init per_environment--plan per_environment--apply per_environment--destroy
+.PHONY: per_environment--clean per_environment--init per_environment--plan per_environment--apply per_environment--destroy
 SRC_FILES = $(shell find ./infrastructure/3_per_environment -name "*.tf")
 
 per_environment--clean:

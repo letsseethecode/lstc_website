@@ -1,4 +1,4 @@
-.PHONY := help install clean build pack publish init plan apply destroy
+.PHONY: help install clean build pack publish init plan apply destroy
 .DEFAULT_GOAL := help
 
 SCOPE ?= per_environment

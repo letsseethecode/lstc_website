@@ -23,9 +23,9 @@ RUN adduser \
     --uid "${UID}" \
     "${USER}"
 
-COPY . ./lstc_api
+COPY . ./lstc-api
 
-WORKDIR /app/lstc_api
+WORKDIR /app/lstc-api
 
 ENV RUSTFLAGS='-C link-arg=-s'
 RUN cargo install --path .
@@ -50,9 +50,9 @@ COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 
 # Copy our build
-COPY --from=builder /app/lstc_api/target/release/lstc_api .
+COPY --from=builder /app/lstc-api/target/release/lstc-api .
 
 # Use an unprivileged user.
 USER user:user
 
-CMD ["./lstc_api"]
+CMD ["./lstc-api"]

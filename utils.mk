@@ -1,4 +1,4 @@
-.PHONY := export_%
+.PHONY: export_%
 
 # this is a guard target, that causes the makefile to exit if an      │
 # environment variable is not set.                                    │

@@ -1,4 +1,4 @@
-.PHONY=api api--install api--build api--pack api--publish
+.PHONY: api api--install api--clean api--build api--pack api--publish
 
 SRC_FILES := $(shell find ./lstc-api -name "*.rs")
 API_VERSION ?= $(shell grep -E "^version" lstc-api/Cargo.toml | grep -Eo "[0-9+]\.[0-9+]\.[0-9+]")
@@ -14,30 +14,30 @@ lstc-api/target/release/lstc-api: $(SRC_FILES)
 	cd lstc-api && \
 	cargo build --release
 
-.cache/api--pack: api--build per_account--output
-	echo "Packing..."
-	docker build lstc-api/. -t "lstc-api:${API_VERSION}" -t "${ECR_URL}:${API_VERSION}" && \
+.cache/api--pack__%: lstc-api/target/release/lstc-api
+	echo "Packing... ${*}"
+	docker build lstc-api/. -t "lstc-api:${*}" -t "${ECR_URL}:${*}"
 	touch $@
 
-.cache/api--publish: .cache/api--pack per_account--output
-	echo "Publishing..."
+.cache/api--publish__%: .cache/api--pack__%
+	echo "Publishing... ${*}"
 	aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${ECR_URL}
-	docker push "${ECR_URL}:${API_VERSION}" && \
+	docker push "${ECR_URL}:${*}"
 	touch $@
 
 #
 # These are the short-hand targets for the api, which are easier to use
 #
 
-api--install:															## Install pre-requisites for lstc-api
+api--install:												## Install pre-requisites for lstc-api
 	echo "Not implemented"
 
-api--clean:																## Clean up the API files
-	rm -rf lstc-api/target/* &
+api--clean:													## Clean up the API files
+	rm -rf lstc-api/target/*
 	rm -f .cache/api--*
 
-api--build: lstc-api/target/release/lstc-api							## Compile the API
+api--build: lstc-api/target/release/lstc-api				## Compile the API
 
-api--pack: api--build .cache/api--pack									## Build the Docker container
+api--pack: .cache/api--pack__${API_VERSION}					## Build the Docker container
 
-api--publish: api--pack .cache/api--publish								## Publish the API to ECR
+api--publish: .cache/api--publish__${API_VERSION}			## Publish the API to ECR
