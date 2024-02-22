@@ -7,4 +7,4 @@ target/
 \#*
 .cache/
 *.tfplan
-output.json
+output*.json

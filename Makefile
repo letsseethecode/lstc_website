@@ -2,18 +2,18 @@
 .DEFAULT_GOAL := help
 
 SCOPE ?= per_environment
-ACCOUNT ?= default
-ENV ?= dev
 
 MAKE_FILES := $(shell find . -name "*.mk")
 include $(MAKE_FILES)
+
+BUILD_OUTPUT := $(API_OUTPUT) $(WEB_OUTPUT)
 
 install: api--install web--install						## Install the pre-requisites
 
 clean: per_environment--clean api--clean web--clean		## Remove all the compiled artifacts
 	rm .cache/*
 
-build: api--build web--build 							## Build the project
+build: $(BUILD_OUTPUT) 									## Build the project
 
 pack: api--pack 										## Pack assets, ready for publishing
 

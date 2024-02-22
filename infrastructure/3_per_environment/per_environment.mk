@@ -1,35 +1,34 @@
 .PHONY: per_environment--clean per_environment--init per_environment--plan per_environment--apply per_environment--destroy
 SRC_FILES = $(shell find ./infrastructure/3_per_environment -name "*.tf")
+ENV ?= dev
+ENV_PLAN := infrastructure/3_per_environment/per_environment__%.tfplan
+ENV_OUTPUT := infrastructure/3_per_environment/output__%.json
 
 per_environment--clean:
-	rm infrastructure/3_per_environment/per_environment.tfplan
+	rm infrastructure/3_per_environment/per_environment__*.tfplan
 
 per_environment--init:
 	cd infrastructure/3_per_environment && \
 	terraform init \
 		-var-file=./vars/${ENV}.tfvars
 
-infrastructure/3_per_environment/per_environment.tfplan: $(SRC_FILES) build
-	cd infrastructure/3_per_environment && \
-	terraform workspace select -or-create=true ${ENV} && \
+$(ENV_PLAN): $(SRC_FILES) $(BUILD_OUTPUT)
+	cd ${dir $@} && \
+	terraform workspace select -or-create=true ${*} && \
 	terraform plan \
-		-var-file=./vars/${ENV}.tfvars \
-		-out=./per_environment.tfplan
+		-var-file=./vars/${*}.tfvars \
+		-out=${notdir $@}
 
-per_environment--plan: infrastructure/3_per_environment/per_environment.tfplan
-
-per_environment--apply: per_environment--plan
-	cd infrastructure/3_per_environment && \
+$(ENV_OUTPUT): $(ENV_PLAN)
+	cd ${dir $@} && \
 	terraform workspace select -or-create=true ${ENV} && \
 	terraform apply \
-		./per_environment.tfplan && \
-	terraform output -json > ./output.json
+		./per_environment__${*}.tfplan && \
+	terraform output -json > ${notdir $@}
 
-per_environment--output:
-	cd infrastructure/2_per_environment && \
-	terraform workspace select -or-create=true ${ACCOUNT} && \
-	terraform apply -refresh-only && \
-	terraform output -json > ./output.json
+per_environment--plan: infrastructure/3_per_environment/per_environment__${ENV}.tfplan
+
+per_environment--apply: infrastructure/3_per_environment/output__${ENV}.json
 
 per_environment--destroy:
 	cd infrastructure/3_per_environment && \

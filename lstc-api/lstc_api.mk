@@ -1,8 +1,9 @@
 .PHONY: api api--install api--clean api--build api--pack api--publish
 
-SRC_FILES := $(shell find ./lstc-api -name "*.rs")
-API_VERSION ?= $(shell grep -E "^version" lstc-api/Cargo.toml | grep -Eo "[0-9+]\.[0-9+]\.[0-9+]")
-ECR_URL := $(shell cat infrastructure/2_per_account/output.json | jq -r .ecr_url.value)
+SRC_FILES 	:= $(shell find ./lstc-api -name "*.rs")
+API_VERSION	?= $(shell grep -E "^version" lstc-api/Cargo.toml | grep -Eo "[0-9+]\.[0-9+]\.[0-9+]")
+ECR_URL 	:= $(shell cat infrastructure/2_per_account/output.json | jq -r .ecr_url.value)
+API_OUTPUT 	:= lstc-api/target/release/lstc-api
 
 include utils.mk
 
@@ -10,17 +11,15 @@ include utils.mk
 # These are the proper targets for building and publishing the API
 #
 
-lstc-api/target/release/lstc-api: $(SRC_FILES)
+$(API_OUTPUT): $(SRC_FILES)
 	cd lstc-api && \
 	cargo build --release
 
-.cache/api--pack__%: lstc-api/target/release/lstc-api
-	echo "Packing... ${*}"
+.cache/api--pack__%: $(WEB_OUTPUT)
 	docker build lstc-api/. -t "lstc-api:${*}" -t "${ECR_URL}:${*}"
 	touch $@
 
 .cache/api--publish__%: .cache/api--pack__%
-	echo "Publishing... ${*}"
 	aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${ECR_URL}
 	docker push "${ECR_URL}:${*}"
 	touch $@
@@ -36,7 +35,7 @@ api--clean:													## Clean up the API files
 	rm -rf lstc-api/target/*
 	rm -f .cache/api--*
 
-api--build: lstc-api/target/release/lstc-api				## Compile the API
+api--build: $(API_OUTPUT)									## Compile the API
 
 api--pack: .cache/api--pack__${API_VERSION}					## Build the Docker container
 

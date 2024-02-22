@@ -1,5 +1,6 @@
 .PHONY: per_account--clean per_account--init per_account--plan per_account--apply per_account--destroy per_account--output
 SRC_FILES = $(shell find ./infrastructure/2_per_account -name "*.tf")
+ACCOUNT ?= default
 
 per_account--clean:
 	rm infrastructure/2_per_account/per_account.tfplan

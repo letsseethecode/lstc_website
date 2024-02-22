@@ -1,6 +1,7 @@
-.PHONE := web--clean web--build
+.PHONE 		:= web--clean web--build
+WEB_OUTPUT	:= lstc-web/dist/index.html
 
-lstc-web/dist/index.html:
+$(WEB_OUTPUT):
 	cd lstc-web && \
 	trunk build --release
 
@@ -12,5 +13,5 @@ web--clean: 							## Delete the Website
 	rm -rf lstc-web/dist && \
 	rm -rf .cache/web--*
 
-web--build: lstc-web/dist/index.html	## Build the website
+web--build: $(WEB_OUTPUT)	## Build the website
 
