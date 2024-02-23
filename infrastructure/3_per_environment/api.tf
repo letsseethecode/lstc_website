@@ -129,8 +129,8 @@ resource "aws_ecs_service" "lstc-api" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets          = [for subnet in aws_subnet.public : subnet.id]
+    subnets          = [for subnet in aws_subnet.private : subnet.id]
     security_groups  = [aws_security_group.lstc-api.id]
-    assign_public_ip = true # TODO fix this
+    assign_public_ip = false
   }
 }
