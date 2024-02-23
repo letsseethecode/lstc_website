@@ -1,25 +1,18 @@
-resource "aws_iam_role" "api_ecs_execution" {
-  name = "${local.prefix}--api--ecs-execution"
+# ------------------------------------------------------------------------------
+# ECS Cluster
+# ------------------------------------------------------------------------------
 
-  assume_role_policy = jsonencode(
-    {
-      "Version" : "2012-10-17",
-      "Statement" : [
-        {
-          "Action" : "sts:AssumeRole",
-          "Principal" : {
-            "Service" : "ecs-tasks.amazonaws.com"
-          },
-          "Effect" : "Allow",
-          "Sid" : ""
-        }
-      ]
-    }
-  )
+resource "aws_ecs_cluster" "cluster" {
+  name = "${local.prefix}--cluster"
 }
 
-resource "aws_iam_role" "api_ecs_task" {
-  name = "${local.prefix}--api--ecs-task"
+# ------------------------------------------------------------------------------
+# ECS Task Definition
+# ------------------------------------------------------------------------------
+
+# This policy is used by FARGATE to setup the containers
+resource "aws_iam_role" "api_ecs_execution" {
+  name = "${local.prefix}--api--ecs-execution"
 
   assume_role_policy = jsonencode(
     {
@@ -43,21 +36,38 @@ resource "aws_iam_role_policy_attachment" "ecs-task-execution-role-policy-attach
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+# This policy is used by the container for permissions
+resource "aws_iam_role" "api_ecs_task" {
+  name = "${local.prefix}--api--ecs-task"
+
+  assume_role_policy = jsonencode(
+    {
+      "Version" : "2012-10-17",
+      "Statement" : [
+        {
+          "Action" : "sts:AssumeRole",
+          "Principal" : {
+            "Service" : "ecs-tasks.amazonaws.com"
+          },
+          "Effect" : "Allow",
+          "Sid" : ""
+        }
+      ]
+    }
+  )
+}
+
 # resource "aws_iam_role_policy_attachment" "task_s3" {
 #   role       = "${aws_iam_role.ecs_task_role.name}"
 #   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 # }
 
-resource "aws_ecs_cluster" "cluster" {
-  name = "${local.prefix}--cluster"
+resource "aws_cloudwatch_log_group" "lstc-api_container" {
+  name = "ecs/${local.prefix}--lstc-api--container"
 }
 
 data "aws_ecr_repository" "lstc-api" {
   name = "lstc_api"
-}
-
-resource "aws_cloudwatch_log_group" "lstc-api_container" {
-  name = "ecs/${local.prefix}--lstc-api--container"
 }
 
 resource "aws_ecs_task_definition" "definition" {
@@ -101,6 +111,34 @@ resource "aws_ecs_task_definition" "definition" {
   ])
 }
 
+# ------------------------------------------------------------------------------
+# Security Group (API LB)
+# ------------------------------------------------------------------------------
+
+resource "aws_security_group" "lstc-api-lb" {
+  name        = "${local.prefix}--lstc-api-lb"
+  description = "Inbound/Outbound traffic for the LSTC API LB"
+  vpc_id      = aws_vpc.vpc.id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "lstc-api-lb--allow_http" {
+  security_group_id = aws_security_group.lstc-api-lb.id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "tcp"
+  from_port         = 80
+  to_port           = 80
+}
+
+resource "aws_vpc_security_group_egress_rule" "lstc-api-lb--allow_all" {
+  security_group_id = aws_security_group.lstc-api-lb.id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "all"
+}
+
+# ------------------------------------------------------------------------------
+# Security Group (API)
+# ------------------------------------------------------------------------------
+
 resource "aws_security_group" "lstc-api" {
   name        = "${local.prefix}--lstc-api"
   description = "Inbound/Outbound traffic for the LSTC API"
@@ -121,6 +159,49 @@ resource "aws_vpc_security_group_egress_rule" "lstc-api--allow_all" {
   ip_protocol       = "all"
 }
 
+# ------------------------------------------------------------------------------
+# Load Balancer
+# ------------------------------------------------------------------------------
+
+resource "aws_lb" "lstc-api" {
+  name               = "${replace(local.prefix, "_", "-")}--lstc-api"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.lstc-api-lb.id]
+  subnets            = [for subnet in aws_subnet.public : subnet.id]
+
+  tags = {
+    Name = "${local.prefix}--lstc-api-lb"
+  }
+}
+
+resource "aws_lb_target_group" "lstc-api" {
+  name        = "${replace(local.prefix, "_", "-")}--lstc-api"
+  port        = 8080
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = aws_vpc.vpc.id
+
+  health_check {
+    path = "/health"
+  }
+}
+
+resource "aws_lb_listener" "lstc-api" {
+  load_balancer_arn = aws_lb.lstc-api.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.lstc-api.arn
+  }
+}
+
+# ------------------------------------------------------------------------------
+# ECS Service
+# ------------------------------------------------------------------------------
+
 resource "aws_ecs_service" "lstc-api" {
   name            = "${local.prefix}--lstc-api"
   cluster         = aws_ecs_cluster.cluster.id
@@ -132,5 +213,11 @@ resource "aws_ecs_service" "lstc-api" {
     subnets          = [for subnet in aws_subnet.private : subnet.id]
     security_groups  = [aws_security_group.lstc-api.id]
     assign_public_ip = false
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.lstc-api.arn
+    container_name   = "${local.prefix}--lstc-api--container"
+    container_port   = 8080
   }
 }

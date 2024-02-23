@@ -17,7 +17,7 @@ data "aws_availability_zones" "available" {}
 # ------------------------------------------------------------------------------
 
 resource "aws_subnet" "public" {
-  count = 1
+  count = 2
 
   vpc_id                  = aws_vpc.vpc.id
   cidr_block              = cidrsubnet(aws_vpc.vpc.cidr_block, 4, count.index)
@@ -34,7 +34,7 @@ resource "aws_subnet" "public" {
 # ------------------------------------------------------------------------------
 
 resource "aws_subnet" "private" {
-  count = 1
+  count = 2
 
   vpc_id                  = aws_vpc.vpc.id
   cidr_block              = cidrsubnet(aws_vpc.vpc.cidr_block, 4, length(aws_subnet.public) + count.index)
