@@ -3,6 +3,7 @@ SRC_FILES = $(shell find ./infrastructure/3_per_environment -name "*.tf")
 ENV ?= dev
 ENV_PLAN := infrastructure/3_per_environment/per_environment__%.tfplan
 ENV_OUTPUT := infrastructure/3_per_environment/output__%.json
+API_VERSION	?= $(shell grep -E "^version" lstc-api/Cargo.toml | grep -Eo "[0-9+]\.[0-9+]\.[0-9+]")
 
 per_environment--clean:
 	rm infrastructure/3_per_environment/per_environment__*.tfplan
@@ -17,6 +18,7 @@ $(ENV_PLAN): $(SRC_FILES) $(BUILD_OUTPUT) $(WEB_ASSETS)
 	terraform workspace select -or-create=true ${*} && \
 	terraform plan \
 		-var-file=./vars/${*}.tfvars \
+		-var "api-version=${API_VERSION}"\
 		-out=${notdir $@}
 
 $(ENV_OUTPUT): $(ENV_PLAN)
