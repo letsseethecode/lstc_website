@@ -36,6 +36,7 @@ per_environment--apply: infrastructure/3_per_environment/output__${ENV}.json
 
 per_environment--destroy:
 	cd infrastructure/3_per_environment && \
+	terraform workspace select -or-create=true ${ENV} && \
 	terraform destroy \
 		-var "api-version=${API_VERSION}" \
 		-var "web-version=${WEB_VERSION}" \
