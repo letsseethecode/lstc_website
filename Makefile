@@ -15,9 +15,9 @@ clean: per_environment--clean api--clean web--clean		## Remove all the compiled 
 
 build: $(BUILD_OUTPUT) 									## Build the project
 
-pack: api--pack 										## Pack assets, ready for publishing
+pack: api--pack web--pack								## Pack assets, ready for publishing
 
-publish: api--publish 									## Publish assets to repositories (e.g. ECR)
+publish: api--publish web--publish 						## Publish assets to repositories (e.g. ECR)
 
 init: workspace $(SCOPE)--init 							## Initialise the Terraform
 

@@ -1,35 +1,61 @@
 html,
 body {
-  height: 100%;
-  margin: 0;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 16px;
+  background-color: #111111;
+  color: hsl(140, 15%, 65%);
 }
 
-body {
-  align-items: center;
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: hsl(140, 25%, 85%);
+}
+
+a {
+  color: hsl(140, 90%, 40%);
+}
+
+.content {
+  position: relative;
+  max-width: 896px;
+  margin: 0 auto;
   display: flex;
-  justify-content: center;
-
-  background: linear-gradient(to bottom right, #444444, #009a5b);
-  font-size: 1.5rem;
+  flex-direction: column;
 }
 
-main {
-  color: #fff6d5;
-  font-family: sans-serif;
+.content__title {
   text-align: center;
+  color: hsl(140, 90%, 40%);
+  text-shadow: 0px 0px 10px hsl(140, 90%, 40%);
 }
 
-.logo {
-  height: 20em;
+.content__subtitle {
+  text-align: center;
+  color: hsl(140, 50%, 85%);
+
+  @media (max-width: 896px) {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
-.heart:after {
-  content: "❤️";
+.content__image {
+  width: 128px;
+  height: 128px;
+  margin: 0 auto;
 
-  font-size: 1.75em;
+  @media (min-width: 896px) {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+  }
 }
 
-h1 + .subtitle {
-  display: block;
-  margin-top: -1em;
+.content__twitch {
+  vertical-align: middle;
+  width: 24px;
+  height: 24px;
 }

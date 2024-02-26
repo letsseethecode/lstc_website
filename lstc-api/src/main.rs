@@ -2,7 +2,7 @@ use actix_web::{get, middleware::Logger, post, web, App, HttpResponse, HttpServe
 
 #[post("/api/echo")]
 async fn echo(req_body: String) -> impl Responder {
-    HttpResponse::Ok().body(req_body)
+    HttpResponse::Ok().body(format!("Echo: {}", req_body))
 }
 
 #[get("/health")]

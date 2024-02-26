@@ -3,5 +3,7 @@ mod app;
 use app::App;
 
 fn main() {
-    yew::Renderer::<App>::new().render();
+    let renderer = yew::Renderer::<App>::new();
+    renderer.render();
+    // renderer.hydrate();
 }
