@@ -160,45 +160,6 @@ resource "aws_vpc_security_group_egress_rule" "lstc-api--allow_all" {
 }
 
 # ------------------------------------------------------------------------------
-# Load Balancer
-# ------------------------------------------------------------------------------
-
-resource "aws_lb" "lstc-api" {
-  name               = "${replace(local.prefix, "_", "-")}--lstc-api"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.lstc-api-lb.id]
-  subnets            = [for subnet in aws_subnet.public : subnet.id]
-
-  tags = {
-    Name = "${local.prefix}--lstc-api-lb"
-  }
-}
-
-resource "aws_lb_target_group" "lstc-api" {
-  name        = "${replace(local.prefix, "_", "-")}--lstc-api"
-  port        = 8080
-  protocol    = "HTTP"
-  target_type = "ip"
-  vpc_id      = aws_vpc.vpc.id
-
-  health_check {
-    path = "/health"
-  }
-}
-
-resource "aws_lb_listener" "lstc-api" {
-  load_balancer_arn = aws_lb.lstc-api.arn
-  port              = 80
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.lstc-api.arn
-  }
-}
-
-# ------------------------------------------------------------------------------
 # ECS Service
 # ------------------------------------------------------------------------------
 

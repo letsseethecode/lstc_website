@@ -1,6 +1,6 @@
 use actix_web::{get, middleware::Logger, post, web, App, HttpResponse, HttpServer, Responder};
 
-#[post("/echo")]
+#[post("/api/echo")]
 async fn echo(req_body: String) -> impl Responder {
     HttpResponse::Ok().body(req_body)
 }
