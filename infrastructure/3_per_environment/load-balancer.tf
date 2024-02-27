@@ -48,17 +48,38 @@ resource "aws_lb_listener" "lstc-80" {
   protocol          = "HTTP"
 
   default_action {
+    type = "redirect"
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+resource "aws_lb_listener" "lstc-443" {
+  load_balancer_arn = aws_lb.lstc.arn
+  port              = 443
+  protocol          = "HTTPS"
+  certificate_arn   = aws_acm_certificate.lb.arn
+
+  default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.lstc-web.arn
   }
+}
+
+resource "aws_lb_listener_certificate" "example" {
+  listener_arn    = aws_lb_listener.lstc-443.arn
+  certificate_arn = aws_acm_certificate.lb.arn
 }
 
 # ------------------------------------------------------------------------------
 # API redirect
 # ------------------------------------------------------------------------------
 
-resource "aws_lb_listener_rule" "lstc-80--api" {
-  listener_arn = aws_lb_listener.lstc-80.arn
+resource "aws_lb_listener_rule" "lstc-443--api" {
+  listener_arn = aws_lb_listener.lstc-443.arn
   priority     = 1
   action {
     type             = "forward"
