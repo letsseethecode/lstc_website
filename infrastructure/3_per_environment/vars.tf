@@ -8,6 +8,11 @@ variable "web-version" {
   description = "The container version to deploy from the ECR"
 }
 
+variable "subnet-pair-count" {
+  type        = number
+  description = "The number of pairs (private/public) subnets to be created"
+}
+
 variable "api-desired-count" {
   type        = number
   description = "The number of APIs to be deployed"
