@@ -33,9 +33,12 @@ resource "aws_route53_record" "lb-dvo" {
 }
 
 resource "aws_acm_certificate" "lb" {
-  domain_name               = "${local.environment}.${data.aws_route53_zone.primary.name}"
-  subject_alternative_names = ["${local.environment}.${data.aws_route53_zone.primary.name}"]
-  validation_method         = "DNS"
+  domain_name = "${local.environment}.${data.aws_route53_zone.primary.name}"
+  subject_alternative_names = [
+    data.aws_route53_zone.primary.name,
+    "${local.environment}.${data.aws_route53_zone.primary.name}"
+  ]
+  validation_method = "DNS"
   lifecycle {
     create_before_destroy = true
   }
