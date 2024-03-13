@@ -51,10 +51,8 @@ pub fn app() -> Html {
             <h3>{"How?"}</h3>
 
             <p>
-                {"
-                Check out our github repositories for information
-                <a href=\"https://github.com/letsseethecode\">https://github.com/letsseethecode</a>
-                "}
+                {"Check out our github repositories for information "}
+                <a href="https://github.com/letsseethecode">{"https://github.com/letsseethecode"}</a>
             </p>
 
             <h3>{"When?"}</h3>
