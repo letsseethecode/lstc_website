@@ -8,3 +8,4 @@ target/
 .cache/
 *.tfplan
 output*.json
+tarpaulin-report.html
