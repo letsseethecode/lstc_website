@@ -1,7 +1,21 @@
 use yew::prelude::*;
+use yew_router::{BrowserRouter, Routable, Switch};
 
-#[function_component(App)]
-pub fn app() -> Html {
+#[derive(Clone, Routable, PartialEq)]
+enum Route {
+    #[at("/")]
+    Home,
+    #[at("/404")]
+    #[not_found]
+    NotFound,
+    #[at("/event")]
+    EventList,
+    #[at("/event/:id")]
+    EventView { id: String },
+}
+
+#[function_component(Home)]
+fn home() -> Html {
     html! {
         <main>
             <div class="content">
@@ -14,6 +28,12 @@ pub fn app() -> Html {
             </h2>
 
             <h3>{"The Code is the Star."}</h3>
+
+            <ul>
+                <li><a href="/">{"Home"}</a></li>
+                <li><a href="/event">{"Events"}</a></li>
+                <li><a href="/event/2024-03-11">{"2024-03-11"}</a></li>
+            </ul>
 
             <p>
                 {"A new hybrid on-line/in-person meetup where the code is the star.
@@ -73,5 +93,49 @@ pub fn app() -> Html {
             </p>
         </div>
     </main>
+    }
+}
+
+#[function_component(NotFound)]
+fn not_found() -> Html {
+    html!(
+        <div>{"Not Found"}</div>
+    )
+}
+
+#[function_component(EventList)]
+fn event_list() -> Html {
+    html!(
+        <div>{"Event List"}</div>
+    )
+}
+
+#[derive(Properties, PartialEq)]
+struct EventViewProps {
+    id: String,
+}
+
+#[function_component(EventView)]
+fn event_view(props: &EventViewProps) -> Html {
+    html!(
+        <div>{format!("Event View : {}", props.id)}</div>
+    )
+}
+
+fn switch(routes: Route) -> Html {
+    match routes {
+        Route::Home => html!(<Home/>),
+        Route::NotFound => html!(<NotFound/>),
+        Route::EventList => html!(<EventList />),
+        Route::EventView { id } => html!(<EventView id={id} />),
+    }
+}
+
+#[function_component(App)]
+pub fn app() -> Html {
+    html! {
+        <BrowserRouter>
+            <Switch<Route> render={switch} />
+        </BrowserRouter>
     }
 }
