@@ -1,1 +1,11 @@
 *.bkp
+*~
+.terraform/
+.terraform.lock.hcl
+target/
+.#*
+\#*
+.cache/
+*.tfplan
+output*.json
+tarpaulin-report.html

@@ -8,6 +8,31 @@
 * Html
 * Javascript
 
+# Instructions
+
+## How to install
+
+
+Install the pre-requisites using.
+```sh
+make install
+```
+
+Build the project
+```sh
+make build
+```
+
+Generate the Terraform plan
+```sh
+make plan
+```
+
+Apply the Terraform plan
+```sh
+make apply
+```
+
 # Architecture
 
 ## C4 Diagram
@@ -19,6 +44,10 @@
 ### C2 - Containers
 
 ![C4 Diagram - Website](./docs/images/C4-C2%20-%20website.png)
+
+## Infrastructure
+
+![AWS Infrastructure](./docs/images/C4-AWS%20Components.drawio.png)
 
 # Features
 

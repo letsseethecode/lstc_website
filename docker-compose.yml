@@ -1,0 +1,17 @@
+version: "3.1"
+
+services:
+  api:
+    image: lstc_api:latest
+    restart: always
+    ports:
+      - 8080:8080
+
+  web:
+    image: nginx
+    volumes:
+      - ./lstc-web/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./lstc-web/dist:/app
+    ports:
+      - 80:80
+    command: [ nginx-debug, '-g', 'daemon off;' ]
