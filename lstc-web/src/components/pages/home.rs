@@ -1,6 +1,6 @@
 use yew::{function_component, html, Html};
 
-#[function_component(Home)]
+#[function_component(HomePage)]
 pub fn home() -> Html {
     html! {
         <main>
@@ -19,6 +19,7 @@ pub fn home() -> Html {
                 <li><a href="/">{"Home"}</a></li>
                 <li><a href="/event">{"Events"}</a></li>
                 <li><a href="/event/2024-03-11">{"2024-03-11"}</a></li>
+                <li><a href="/event/2024-03-15">{"2024-04-15"}</a></li>
             </ul>
 
             <p>

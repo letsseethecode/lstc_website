@@ -1,4 +1,4 @@
-use crate::components::{EventList, EventView, Home, NotFound};
+use crate::components::{EventListPage, EventViewPage, HomePage, NotFoundPage};
 use yew::prelude::*;
 use yew_router::{BrowserRouter, Routable, Switch};
 
@@ -17,10 +17,10 @@ enum Route {
 
 fn switch(routes: Route) -> Html {
     match routes {
-        Route::Home => html!(<Home/>),
-        Route::NotFound => html!(<NotFound/>),
-        Route::EventList => html!(<EventList />),
-        Route::EventView { id } => html!(<EventView id={id} />),
+        Route::Home => html!(<HomePage/>),
+        Route::NotFound => html!(<NotFoundPage/>),
+        Route::EventList => html!(<EventListPage />),
+        Route::EventView { id } => html!(<EventViewPage id={id} />),
     }
 }
 
