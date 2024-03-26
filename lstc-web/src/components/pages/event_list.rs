@@ -1,13 +1,13 @@
 use yew::{function_component, html, Html};
 
 use crate::app::{Link, Route};
-use crate::components::Template;
+use crate::components::{Console, Template};
 
 #[function_component(EventListPage)]
 pub fn event_list() -> Html {
     html!(
         <Template>
-            <h3>{"Events"}</h3>
+            <h3><Console text="Events" /></h3>
             <h4>{"upcoming events"}</h4>
             <table>
                 <tr>
