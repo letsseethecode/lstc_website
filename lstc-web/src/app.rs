@@ -3,7 +3,7 @@ use yew::prelude::*;
 use yew_router::{BrowserRouter, Routable, Switch};
 
 #[derive(Clone, Routable, PartialEq)]
-enum Route {
+pub enum Route {
     #[at("/")]
     Home,
     #[at("/404")]
@@ -14,6 +14,7 @@ enum Route {
     #[at("/event/:id")]
     EventView { id: String },
 }
+pub type Link = yew_router::components::Link<Route>;
 
 fn switch(routes: Route) -> Html {
     match routes {

@@ -1,3 +1,4 @@
+use crate::app::{Link, Route};
 use yew::{function_component, html, Html, Properties};
 
 #[derive(Properties, PartialEq)]
@@ -22,8 +23,12 @@ pub fn template(props: &TemplateProps) -> Html {
                 </h2>
 
                 <ul class="menu">
-                    <li class="menu__item"><a href="/">{"Home"}</a></li>
-                    <li class="menu__item"><a href="/event">{"Events"}</a></li>
+                    <li class="menu__item">
+                        <Link to={Route::Home}>{"Home"}</Link>
+                    </li>
+                    <li class="menu__item">
+                        <Link to={Route::EventList}>{"Events"}</Link>
+                    </li>
                 </ul>
                 {props.children.clone()}
             </div>
