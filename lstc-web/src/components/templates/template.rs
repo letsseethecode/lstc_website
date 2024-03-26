@@ -9,12 +9,12 @@ pub struct TemplateProps {
 pub fn template(props: &TemplateProps) -> Html {
     html!(
         <main>
-            <header>{"Header"}</header>
             <div class="content">
                 <img class="content__image" src="/images/lstc_logo.png" />
                 <h1 class="content__title">
                     {"letsseethecode.com"}
                 </h1>
+
                 <h2 class="content__subtitle">
                     <span>{"Connect."}</span>
                     <span>{"Collaborate."}</span>
@@ -27,10 +27,8 @@ pub fn template(props: &TemplateProps) -> Html {
                     <li class="menu__item"><a href="/event/2024-03-11">{"2024-03-11"}</a></li>
                     <li class="menu__item"><a href="/event/2024-03-15">{"2024-04-15"}</a></li>
                 </ul>
-
                 {props.children.clone()}
             </div>
-            <footer>{"Footer"}</footer>
         </main>
     )
 }
