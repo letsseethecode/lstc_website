@@ -1,8 +1,12 @@
 use yew::{function_component, html, Html};
 
+use crate::components::Template;
+
 #[function_component(NotFoundPage)]
 pub fn not_found() -> Html {
     html!(
-        <div>{"Not Found"}</div>
+        <Template>
+            {"Not Found"}
+        </Template>
     )
 }

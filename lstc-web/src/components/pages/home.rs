@@ -1,26 +1,11 @@
+use crate::components::Template;
 use yew::{function_component, html, Html};
 
 #[function_component(HomePage)]
 pub fn home() -> Html {
     html! {
-        <main>
-            <div class="content">
-            <img class="content__image" src="./images/lstc_logo.png" />
-            <h1 class="content__title">{"letsseethecode.com"}</h1>
-            <h2 class="content__subtitle">
-                <span>{"Connect."}</span>
-                <span>{"Collaborate."}</span>
-                <span>{"Code."}</span>
-            </h2>
-
+        <Template>
             <h3>{"The Code is the Star."}</h3>
-
-            <ul>
-                <li><a href="/">{"Home"}</a></li>
-                <li><a href="/event">{"Events"}</a></li>
-                <li><a href="/event/2024-03-11">{"2024-03-11"}</a></li>
-                <li><a href="/event/2024-03-15">{"2024-04-15"}</a></li>
-            </ul>
 
             <p>
                 {"A new hybrid on-line/in-person meetup where the code is the star.
@@ -78,7 +63,6 @@ pub fn home() -> Html {
                 </a>{". Next hybrid event is Monday 18th March 2024."}
                 {"(Free food and drink!)"}
             </p>
-        </div>
-    </main>
+        </Template>
     }
 }

@@ -1,8 +1,12 @@
 use yew::{function_component, html, Html};
 
+use crate::components::Template;
+
 #[function_component(EventListPage)]
 pub fn event_list() -> Html {
     html!(
-        <div>{"Event List"}</div>
+        <Template>
+            {"Event List"}
+        </Template>
     )
 }

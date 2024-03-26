@@ -6,6 +6,8 @@ body {
   color: hsl(140, 15%, 65%);
 }
 
+$GREEN: hsl(140, 90%, 40%);
+
 h1,
 h2,
 h3,
@@ -15,7 +17,7 @@ h5 {
 }
 
 a {
-  color: hsl(140, 90%, 40%);
+  color: $GREEN;
 }
 
 .content {
@@ -58,4 +60,19 @@ a {
   vertical-align: middle;
   width: 24px;
   height: 24px;
+}
+
+.menu {
+  background-color: $GREEN;
+  padding: 10px;
+  margin: 0 0 20px 0;
+
+  &__item {
+    display: inline;
+    margin: 10px;
+
+    & a {
+      color: black;
+    }
+  }
 }
