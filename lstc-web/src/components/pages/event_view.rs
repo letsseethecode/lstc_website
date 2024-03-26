@@ -10,6 +10,12 @@ pub struct EventViewPageProps {
 #[function_component(EventViewPage)]
 pub fn event_view(props: &EventViewPageProps) -> Html {
     html!(
-        <Template>{format!("Event View : {}", props.id)}</Template>
+        <Template>
+            <h3>{format!("Event View : {}", props.id)}</h3>
+            <p>{"
+                We're still building this bit.  If you'd like to contribute
+                then clone the repository and submit a PR.
+            "}</p>
+        </Template>
     )
 }
