@@ -76,3 +76,45 @@ a {
     }
   }
 }
+
+.console {
+  color: $GREEN;
+
+  &__character {
+    display: inline-block;
+    // animation: reveal 250ms linear 0ms;
+    // width: 10px;
+  }
+
+  &__cursor {
+    display: inline-block;
+    background-color: $GREEN;
+    width: 16px;
+    height: 19px;
+    animation: blinker 1s linear infinite;
+  }
+}
+
+@keyframes reveal {
+  0% {
+    opacity: 0;
+    width: 0;
+  }
+
+  99% {
+    opacity: 0;
+    width: 0;
+  }
+
+  100% {
+    opacity: 1;
+    width: auto;
+    display: inline;
+  }
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
