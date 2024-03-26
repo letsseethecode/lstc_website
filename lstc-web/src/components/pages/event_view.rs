@@ -1,6 +1,6 @@
 use yew::{function_component, html, Html, Properties};
 
-use crate::components::Template;
+use crate::components::{Console, Template};
 
 #[derive(Properties, PartialEq)]
 pub struct EventViewPageProps {
@@ -11,7 +11,7 @@ pub struct EventViewPageProps {
 pub fn event_view(props: &EventViewPageProps) -> Html {
     html!(
         <Template>
-            <h3>{format!("Event View : {}", props.id)}</h3>
+            <h3><Console text={props.id.clone()} /></h3>
             <p>{"
                 We're still building this bit.  If you'd like to contribute
                 then clone the repository and submit a PR.

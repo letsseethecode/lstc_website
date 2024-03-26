@@ -1,3 +1,4 @@
+use crate::components::Console;
 use yew::{function_component, html, Html};
 
 use crate::components::Template;
@@ -6,7 +7,7 @@ use crate::components::Template;
 pub fn not_found() -> Html {
     html!(
         <Template>
-            {"Not Found"}
+            <h3><Console text="Not Found" /></h3>
         </Template>
     )
 }

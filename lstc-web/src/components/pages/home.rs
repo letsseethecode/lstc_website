@@ -1,11 +1,11 @@
-use crate::components::Template;
+use crate::components::{Console, Template};
 use yew::{function_component, html, Html};
 
 #[function_component(HomePage)]
 pub fn home() -> Html {
     html! {
         <Template>
-            <h3>{"The Code is the Star."}</h3>
+            <h3><Console text="The Code is the Star." /></h3>
 
             <p>
                 {"A new hybrid on-line/in-person meetup where the code is the star.
