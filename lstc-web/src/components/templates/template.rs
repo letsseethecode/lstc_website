@@ -24,8 +24,6 @@ pub fn template(props: &TemplateProps) -> Html {
                 <ul class="menu">
                     <li class="menu__item"><a href="/">{"Home"}</a></li>
                     <li class="menu__item"><a href="/event">{"Events"}</a></li>
-                    <li class="menu__item"><a href="/event/2024-03-11">{"2024-03-11"}</a></li>
-                    <li class="menu__item"><a href="/event/2024-03-15">{"2024-04-15"}</a></li>
                 </ul>
                 {props.children.clone()}
             </div>
