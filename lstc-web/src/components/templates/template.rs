@@ -23,13 +23,13 @@ pub fn template(props: &TemplateProps) -> Html {
             </header>
             <section class="template__menu">
                 <ul class="menu">
-                <li class="menu__item">
-                    <Link to={Route::Home}>{"Home"}</Link>
-                </li>
-                <li class="menu__item">
-                    <Link to={Route::EventList}>{"Events"}</Link>
-                </li>
-            </ul>
+                    <li class="menu__item">
+                        <Link to={Route::Home}>{"Home"}</Link>
+                    </li>
+                    <li class="menu__item">
+                        <Link to={Route::EventList}>{"Events"}</Link>
+                    </li>
+                </ul>
             </section>
             <main class="template__main">
                 <div class="template__content">

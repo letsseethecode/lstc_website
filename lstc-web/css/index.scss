@@ -13,11 +13,15 @@ html,
 body {
   height: 100%;
   font-family: Monaco, 'Courier New', Courier, monospace;
-  font-size: 16px;
   background-color: $BLACK;
   color: $TEXT;
+  font-size: 16px;
   padding: 0;
   margin: 0;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 h1,
@@ -106,6 +110,7 @@ a {
   background-color: $GREEN_DARKER;
   padding: 5px;
   margin: 0;
+  width: 100%;
 
   &__item {
     display: inline-block;
