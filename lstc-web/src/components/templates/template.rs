@@ -9,19 +9,19 @@ pub struct TemplateProps {
 #[function_component(Template)]
 pub fn template(props: &TemplateProps) -> Html {
     html!(
-        <main>
-            <div class="content">
-                <img class="content__image" src="/images/lstc_logo.png" />
-                <h1 class="content__title">
-                    {"letsseethecode.com"}
-                </h1>
-
-                <h2 class="content__subtitle">
-                    <span>{"Connect."}</span>
-                    <span>{"Collaborate."}</span>
-                    <span>{"Code."}</span>
-                </h2>
-
+        <div class="template">
+            <header class="template__header">
+                <div class="template__content">
+                    <h1 class="title">{"letsseethecode.com"}</h1>
+                    <img class="logo" src="/images/lstc_logo.png" />
+                    <h2 class="vertical subtitle">
+                        <span>{"Connect."}</span>
+                        <span>{"Collaborate."}</span>
+                        <span>{"Code."}</span>
+                    </h2>
+                </div>
+            </header>
+            <section class="template__menu">
                 <ul class="menu">
                     <li class="menu__item">
                         <Link to={Route::Home}>{"Home"}</Link>
@@ -30,8 +30,17 @@ pub fn template(props: &TemplateProps) -> Html {
                         <Link to={Route::EventList}>{"Events"}</Link>
                     </li>
                 </ul>
-                {props.children.clone()}
-            </div>
-        </main>
+            </section>
+            <main class="template__main">
+                <div class="template__content">
+                    {props.children.clone()}
+                </div>
+            </main>
+            <footer class="template__footer">
+                <div class="template__content">
+                    {"Footer | Goes | Here"}
+                </div>
+            </footer>
+        </div>
     )
 }
