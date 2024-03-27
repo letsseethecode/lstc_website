@@ -44,21 +44,21 @@ pub fn home() -> Html {
 
             <p>
                 {"Check out our github repositories for information "}
-                <a href="https://github.com/letsseethecode">{"https://github.com/letsseethecode"}</a>
+                <a target="_blank" href="https://github.com/letsseethecode">{"https://github.com/letsseethecode"}</a>
             </p>
 
             <h3>{"When?"}</h3>
 
             <p>
                 {"Weekly: Monday @ 6:30pm on "}<strong>{"Twitch"}</strong>
-                <img class="content__twitch" src="./images/twitch_PNG28.png" />
-                <a href="https://twitch.tv/letsseethecode">{"https://twitch.tv/letsseethecode"}</a>
+                <img class="content__twitch" src="./images/twitch_PNG28.png" width="18" height="18" />
+                <a target="_blank" href="https://twitch.tv/letsseethecode">{"https://twitch.tv/letsseethecode"}</a>
             </p>
             <p>
                 {"Monthly: hybrid "}
                 <strong>{"on-line AND in-person"}</strong>
                 {" at "}
-                <a href="https://github.com/letsseethecode/events">
+                <a target="_blank" href="https://github.com/letsseethecode/events">
                     {"The Canal House in Nottingham, UK"}
                 </a>{". Next hybrid event is Monday 18th March 2024."}
                 {"(Free food and drink!)"}

@@ -1,0 +1,81 @@
+$breakpoints: (
+    "xs": 0,
+    "sm": 576px,
+    "md": 768px,
+    "lg": 992px,
+    "xl": 1200px,
+    "xxl": 1400px,
+);
+$next: (
+    "xs": "sm",
+    "sm": "md",
+    "md": "lg",
+    "lg": "xl",
+    "xl": "xxl",
+);
+
+@mixin only-breakpoint($name) {
+    $min: map-get($breakpoints, $name);
+
+    @if (map-has-key($next, $name)) {
+        $max: map-get($breakpoints, map-get($next, $name)) - 1px;
+
+        @media screen and (min-width: $min) and (max-width: $max) {
+            @content
+        }
+    }
+
+    @else {
+        @include from($name) {
+            @content
+        }
+    }
+}
+
+;
+
+@mixin not-breakpoint($name) {
+    $min: map-get($breakpoints, $name) - 1px;
+
+    @if (map-has-key($next, $name)) {
+        $max: map-get($breakpoints, map-get($next, $name));
+
+        @media screen and (max-width: $min),
+        screen and (min-width: $max) {
+            @content
+        }
+    }
+
+    @else {
+        @include from($name) {
+            @content
+        }
+    }
+}
+
+;
+
+@mixin from-breakpoint($from) {
+    $min: map-get($breakpoints, $from);
+
+    @media screen and (min-width: $min) {
+        @content
+    }
+}
+
+@mixin to-breakpoint($to) {
+    $max: map-get($breakpoints, $to);
+
+    @media screen and (max-width: $max) {
+        @content
+    }
+}
+
+@mixin between($from, $to) {
+    $min: map-get($breakpoints, $from);
+    $max: map-get($breakpoints, $to) - 1px;
+
+    @media screen and (min-width: $min) and (max-width: $max) {
+        @content
+    }
+}
