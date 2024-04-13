@@ -7,6 +7,113 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link data-trunk rel="sass" href="css/index.scss" />
   <link data-trunk rel="copy-dir" href="images/" />
+  <style>
+    html,
+    body {
+      font-family: 'Monaco', 'Courier New', Courier, monospace;
+      background-color: #111111;
+      font-size: 16px;
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    .loading {
+      font-size: 2.75em;
+      color: #0ac247;
+      margin: 0 auto;
+      width: 280px;
+      animation: show 100ms step-end 0s 1 normal forwards;
+      visibility: hidden;
+    }
+
+    @keyframes show {
+      0% {
+        visibility: hidden;
+      }
+
+      100% {
+        visibility: visible;
+      }
+    }
+
+    .loading::before {
+      content: '>';
+    }
+
+    .loading::after {
+      content: '█';
+      animation: blinker 1s linear 0s infinite normal forwards;
+    }
+
+    .loading__character {
+      display: inline-block;
+      animation: reveal 250ms step-end 0ms 1 normal forwards;
+      visibility: hidden;
+      width: 0;
+    }
+
+    @keyframes reveal {
+      0% {
+        width: 0;
+        visibility: hidden;
+      }
+
+      100% {
+        width: auto;
+        visibility: visible;
+      }
+    }
+
+    @keyframes blinker {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    .page {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page__header,
+    .page__footer {
+      flex: 1 1 auto;
+    }
+
+    .page__body {
+      padding: 20px;
+    }
+  </style>
 </head>
+
+<body>
+  <div class="page">
+    <div class="page__header"></div>
+    <div class="page__body">
+      <div id="loading">Loading</div>
+    </div>
+    <div class="page__footer"></div>
+  </div>
+</body>
+
+<script type="text/javascript">
+  let timer = 100;
+  let e = document.getElementById("loading");
+  e.className = "loading";
+  e.innerHTML = (e.innerHTML + ' ')
+    .split('')
+    .map((x, ix) => `<span class="loading__character" style="animation-duration: ${timer}ms; animation-delay: ${ix * timer}ms">${x.replace(' ', '&nbsp;')}</span>`)
+    .join('');
+</script>
 
 </html>
