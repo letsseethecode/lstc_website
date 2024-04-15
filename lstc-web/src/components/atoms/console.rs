@@ -5,13 +5,13 @@ use crate::components::Template;
 #[derive(Properties, PartialEq)]
 pub struct ConsoleProps {
     pub text: String,
-    #[prop_or(50)]
+    #[prop_or(250)]
     pub delay: usize,
 }
 
 #[function_component(Console)]
 pub fn console(props: &ConsoleProps) -> Html {
-    let s = (props.text.clone() + " ").replace(' ', "\u{00a0}");
+    let s = (props.text.clone() + " ").replace(' ', "\u{00a0}"); // \u{00a0} => &nbsp;
     html!(
         <div class="console">
             {for s.chars().enumerate().map(|(ix, c)| html!(

@@ -19,6 +19,13 @@
       height: 100%;
     }
 
+    :root {
+      --background: #111111;
+      --green: hsl(140, 90%, 40%);
+      --green-light: color-mix(var(--green), #ffffff 20%);
+      --green-dark: color-mix(var(--green), #000000 15%);
+    }
+
     *,
     *::before,
     *::after {
@@ -27,10 +34,14 @@
 
     .loading {
       font-size: 2.75em;
-      color: #0ac247;
-      margin: 0 auto;
-      width: 280px;
+      color: var(--green);
+      text-shadow: 0 0 4px var(--green);
       animation: show 100ms step-end 0s 1 normal forwards;
+      visibility: hidden;
+    }
+
+    .message {
+      animation: show 0ms step-end 0ms 1 normal forwards;
       visibility: hidden;
     }
 
@@ -91,7 +102,13 @@
     }
 
     .page__body {
+      flex: 0 0 auto;
       padding: 20px;
+    }
+
+    .page__content {
+      width: 275px;
+      margin: 0 auto;
     }
   </style>
 </head>
@@ -100,7 +117,15 @@
   <div class="page">
     <div class="page__header"></div>
     <div class="page__body">
-      <div id="loading">Loading</div>
+      <div class="page__content">
+        <div id="loading">Loading</div>
+        <p class="message" style="animation-delay: 2s">initialising connection...</p>
+        <p class="message" style="animation-delay: 4s">attempting handshake...</p>
+        <p class="message" style="animation-delay: 8s">awaiting response...</p>
+        <p class="message" style="animation-delay: 16s">outcome delayed...</p>
+        <p class="message" style="animation-delay: 24s">this is taking a while...</p>
+        <p class="message" style="animation-delay: 32s">try refreshing...</p>
+      </div>
     </div>
     <div class="page__footer"></div>
   </div>
@@ -112,7 +137,7 @@
   e.className = "loading";
   e.innerHTML = (e.innerHTML + ' ')
     .split('')
-    .map((x, ix) => `<span class="loading__character" style="animation-duration: ${timer}ms; animation-delay: ${ix * timer}ms">${x.replace(' ', '&nbsp;')}</span>`)
+    .map((x, ix) => `<span class="loading__character" style="animation-duration: ${ix * timer}ms">${x.replace(' ', '&nbsp;')}</span>`)
     .join('');
 </script>
 
