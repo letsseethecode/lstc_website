@@ -15,7 +15,7 @@ pub fn console(props: &ConsoleProps) -> Html {
     html!(
         <div class="console">
             {for s.chars().enumerate().map(|(ix, c)| html!(
-                <span class="console__character" style={format!("animation-duration: {}ms", ix*props.delay)}>{c}</span>
+                <span class="console__character" style={format!("animation-duration: {}ms", (ix+1)*props.delay)}>{c}</span>
             ))}
         </div>
     )
