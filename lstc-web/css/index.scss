@@ -1,0 +1,165 @@
+$GREEN: hsl(140, 90%, 40%);
+$GREEN_DARKER: mix($GREEN, #000000, 65%);
+
+$BLACK: #111111;
+
+$TEXT: desaturate($GREEN, 70%);
+$TEXT_LIGHTER: mix($TEXT, #ffffff, 20%);
+$TEXT_LIGHTEST: mix($TEXT, #ffffff, 15%);
+
+@import "_responsive";
+
+html,
+body {
+  height: 100%;
+  font-family: 'Monaco', 'Courier New', Courier, monospace;
+  background-color: $BLACK;
+  color: $TEXT;
+  font-size: 16px;
+  padding: 0;
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: $TEXT_LIGHTER;
+}
+
+table {
+  width: 100%;
+}
+
+a {
+  color: $GREEN;
+
+  &:hover,
+  &:active {
+    background-color: green;
+    color: $BLACK;
+  }
+}
+
+.template {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &__header {
+    flex: 0 0 auto;
+  }
+
+  &__main {
+    flex: 1 1 auto;
+  }
+
+  &__footer {
+    flex: 0 0 auto;
+    background-color: $GREEN_DARKER;
+    color: $BLACK;
+  }
+
+  &__content {
+    padding: 0 20px;
+    max-width: 1028px;
+    margin: 0 auto;
+  }
+}
+
+.logo {
+  float: right;
+  width: 96px;
+  height: 96px;
+
+  @include from-breakpoint("sm") {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+}
+
+.title,
+.subtitle {
+  text-align: center;
+}
+
+.title {
+  color: $GREEN;
+  text-shadow: 0 0 10px $GREEN;
+}
+
+.subtitle {
+  color: $TEXT_LIGHTEST;
+  text-shadow: 0 0 10px $TEXT_LIGHTEST;
+}
+
+.vertical {
+  @include to-breakpoint("sm") {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.menu {
+  background-color: $GREEN_DARKER;
+  padding: 5px;
+  margin: 0;
+  width: 100%;
+
+  &__item {
+    display: inline-block;
+    padding: 5px 10px;
+
+    & a {
+      color: black;
+    }
+  }
+
+  &__item+&__item {
+    border-left: solid 2px $BLACK;
+  }
+}
+
+.console {
+  color: $GREEN;
+
+  &__character {
+    display: inline-block;
+  }
+
+  &__cursor {
+    display: inline-block;
+    background-color: $GREEN;
+    animation: blinker 1s linear infinite;
+  }
+}
+
+@keyframes reveal {
+  0% {
+    opacity: 0;
+    width: 0;
+  }
+
+  99% {
+    opacity: 0;
+    width: 0;
+  }
+
+  100% {
+    opacity: 1;
+    width: auto;
+    display: inline;
+  }
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
