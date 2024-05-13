@@ -3,9 +3,12 @@
 .terraform/
 .terraform.lock.hcl
 target/
+out/
+output/
 .#*
 \#*
 .cache/
 *.tfplan
 output*.json
 tarpaulin-report.html
+.DS_Store

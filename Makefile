@@ -6,7 +6,7 @@ SCOPE ?= per_environment
 MAKE_FILES := $(shell find . -name "*.mk")
 include $(MAKE_FILES)
 
-BUILD_OUTPUT := $(WEB_OUTPUT)
+BUILD_OUTPUT := $(WEB_OUTPUT) $(API_OUTPUT)
 
 install: web--install									## Install the pre-requisites
 

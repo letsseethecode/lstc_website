@@ -1,0 +1,163 @@
+openapi: 3.0.3
+info:
+  title: Lets See The Code - OpenAPI 3.0
+  description: The letsseethecode.com API.
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: chris@letsseethecode.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: https://letsseethecode.com/api
+tags:
+  - name: events
+    description: All endpoints associated with LSTC event
+paths:
+  /event/{year}:
+    get:
+      tags:
+        - event
+      summary: Returns a list of Events
+      description: Return a list of events
+      operationId: event-list
+      parameters:
+        - name: year
+          in: path
+          description: Return all events in the year
+          required: true
+          schema:
+            type: string
+            pattern: ^[0-9]{4}$
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventListEnvelope'
+      security:
+        - api_key: []
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: ${method_event-list}
+        responses:
+          default:
+            statusCode: '200'
+        passthroughBehavior: when_no_match
+        contentHandling: CONVERT_TO_TEXT
+  /event/{year}/{month}/{day}:
+    get:
+      tags:
+        - event
+      summary: Return a single Event
+      description: Returns a single event
+      operationId: event-get
+      parameters:
+        - name: year
+          in: path
+          description: The year of the event
+          required: true
+          schema:
+            type: string
+        - name: month
+          in: path
+          description: The month of the event
+          required: true
+          schema:
+            type: string
+        - name: day
+          in: path
+          description: The day of the event
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventEnvelope'
+        '400':
+          description: Invalid date supplied
+        '404':
+          description: Unknown Event
+      security:
+        - api_key: []
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: ${method_event-get}
+        responses:
+          default:
+            statusCode: '200'
+        passthroughBehavior: when_no_match
+        contentHandling: CONVERT_TO_TEXT
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+    Warning:
+      type: object
+      properties:
+        message:
+          type: string
+    Envelope:
+      type: object
+      properties:
+        message:
+          type: string
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    Event:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        headline:
+          type: string
+        text:
+          type: string
+    EventEnvelope:
+      allOf:
+        - schema: null
+          $ref: '#/components/schemas/Envelope'
+        - type: object
+          properties:
+            date:
+              type: string
+            data:
+              $ref: '#/components/schemas/Event'
+    EventListEnvelope:
+      allOf:
+        - schema: null
+          $ref: '#/components/schemas/Envelope'
+        - type: object
+          properties:
+            year:
+              type: string
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Event'
+  securitySchemes:
+    apikey:
+      type: apiKey
+      name: api_key
+      in: header
+

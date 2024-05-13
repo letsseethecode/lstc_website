@@ -5,6 +5,7 @@ ENV_PLAN := infrastructure/3_per_environment/per_environment__%.tfplan
 ENV_OUTPUT := infrastructure/3_per_environment/output__%.json
 API_VERSION	?= $(shell grep -E "^version" lstc-api/Cargo.toml | grep -Eo "[0-9+]\.[0-9+]\.[0-9+]")
 WEB_VERSION	?= $(shell grep -E "^version" lstc-web/Cargo.toml | grep -Eo "[0-9+]\.[0-9+]\.[0-9+]")
+ACCOUNT ?= $(shell aws sts get-caller-identity | jq -r .Account)
 
 per_environment--clean:
 	rm infrastructure/3_per_environment/per_environment__*.tfplan || true
@@ -19,7 +20,7 @@ $(ENV_PLAN): $(SRC_FILES) $(BUILD_OUTPUT) $(WEB_ASSETS)
 	terraform workspace select -or-create=true ${*} && \
 	terraform plan \
 		-var-file=./vars/${*}.tfvars \
-		-var "api-version=${API_VERSION}" \
+		-var "account=${ACCOUNT}" \
 		-var "web-version=${WEB_VERSION}" \
 		-out=${notdir $@}
 
@@ -38,6 +39,6 @@ per_environment--destroy:
 	cd infrastructure/3_per_environment && \
 	terraform workspace select -or-create=true ${ENV} && \
 	terraform destroy \
-		-var "api-version=${API_VERSION}" \
+		-var "account=${ACCOUNT}" \
 		-var "web-version=${WEB_VERSION}" \
 		-var-file=./vars/${ENV}.tfvars

@@ -1,6 +1,6 @@
-variable "api-version" {
+variable "account" {
   type        = string
-  description = "The container version to deploy from the ECR"
+  description = "The AWS account number"
 }
 
 variable "web-version" {

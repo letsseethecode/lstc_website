@@ -1,10 +1,10 @@
 [package]
-name = "lstc-api"
-version = "0.1.2"
+name = "lstc_apigw"
+version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-actix-web = "4.4.1"
-env_logger = "0.11.0"
+serde = { version = "1.0.201", features = ["derive"] }
+serde_json = "1.0.117"
