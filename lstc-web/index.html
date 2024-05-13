@@ -21,7 +21,7 @@
 
     :root {
       --background: #111111;
-      --green: hsl(140, 90%, 40%);
+      --green: hsl(140, 90%, 50%);
       --green-light: color-mix(var(--green), #ffffff 20%);
       --green-dark: color-mix(var(--green), #000000 15%);
     }
@@ -110,6 +110,18 @@
       width: 275px;
       margin: 0 auto;
     }
+
+    .page__scan-lines {
+      pointer-events: none;
+      background: linear-gradient(0, transparent 0%, #11111180 100%);
+      background-size: auto 2px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1;
+    }
   </style>
 </head>
 
@@ -128,6 +140,7 @@
       </div>
     </div>
     <div class="page__footer"></div>
+    <div class="page__scan-lines"></div>
   </div>
 </body>
 

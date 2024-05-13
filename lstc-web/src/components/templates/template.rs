@@ -12,8 +12,12 @@ pub fn template(props: &TemplateProps) -> Html {
         <div class="template">
             <header class="template__header">
                 <div class="template__content">
-                    <h1 class="title">{"letsseethecode.com"}</h1>
-                    <img class="logo" src="/images/lstc_logo.png" />
+                    <h1 class="title">
+                        {"letsseethecode.com"}
+                    </h1>
+                    <Link to={Route::Home} >
+                        <img class="logo" src="/images/lstc_logo.png" />
+                    </Link>
                     <h2 class="vertical subtitle">
                         <span>{"Connect."}</span>
                         <span>{"Collaborate."}</span>
@@ -22,14 +26,16 @@ pub fn template(props: &TemplateProps) -> Html {
                 </div>
             </header>
             <section class="template__menu">
-                <ul class="menu">
-                    <li class="menu__item">
-                        <Link to={Route::Home}>{"Home"}</Link>
-                    </li>
-                    <li class="menu__item">
-                        <Link to={Route::EventList}>{"Events"}</Link>
-                    </li>
-                </ul>
+                <div class="template__content">
+                    <ul class="menu">
+                        <li class="menu__item">
+                            <Link to={Route::Home}>{"Home"}</Link>
+                        </li>
+                        <li class="menu__item">
+                            <Link to={Route::EventList}>{"Events"}</Link>
+                        </li>
+                    </ul>
+                </div>
             </section>
             <main class="template__main">
                 <div class="template__content">
@@ -41,6 +47,7 @@ pub fn template(props: &TemplateProps) -> Html {
                     {"Footer | Goes | Here"}
                 </div>
             </footer>
+            <div class="template__scan-lines" />
         </div>
     )
 }

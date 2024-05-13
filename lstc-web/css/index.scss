@@ -1,4 +1,4 @@
-$GREEN: hsl(140, 90%, 40%);
+$GREEN: hsl(140, 90%, 50%);
 $GREEN_DARKER: mix($GREEN, #000000, 65%);
 
 $BLACK: #111111;
@@ -11,7 +11,6 @@ $TEXT_LIGHTEST: mix($TEXT, #ffffff, 15%);
 
 html,
 body {
-  height: 100%;
   font-family: 'Monaco', 'Courier New', Courier, monospace;
   background-color: $BLACK;
   color: $TEXT;
@@ -49,7 +48,8 @@ a {
 .template {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  min-height: 100%;
+  position: relative;
 
   &__header {
     flex: 0 0 auto;
@@ -59,6 +59,7 @@ a {
     flex: 1 1 auto;
   }
 
+  &__menu,
   &__footer {
     flex: 0 0 auto;
     background-color: $GREEN_DARKER;
@@ -69,6 +70,18 @@ a {
     padding: 0 20px;
     max-width: 1028px;
     margin: 0 auto;
+  }
+
+  &__scan-lines {
+    pointer-events: none;
+    background: linear-gradient(0, transparent 0%, #11111180 100%);
+    background-size: auto 2px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
   }
 }
 
@@ -108,15 +121,16 @@ a {
 
 .menu {
   background-color: $GREEN_DARKER;
-  padding: 5px;
+  padding: 0;
   margin: 0;
   width: 100%;
 
   &__item {
     display: inline-block;
-    padding: 5px 10px;
 
     & a {
+      padding: 10px 20px;
+      display: inline-block;
       color: black;
     }
   }
