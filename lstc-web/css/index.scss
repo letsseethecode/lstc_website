@@ -128,31 +128,33 @@ a {
 
 .console {
   color: $GREEN;
+  text-shadow: 0 0 5px $GREEN;
 
   &__character {
     display: inline-block;
+    animation: reveal 0ms step-end 0ms 1 normal forwards;
   }
 
-  &__cursor {
-    display: inline-block;
+  &::before {
+    content: '> ';
+  }
+
+  &::after {
     background-color: $GREEN;
-    animation: blinker 1s linear infinite;
+    content: '\00a0';
+    animation: blinker 1s linear infinite normal forwards;
   }
 }
 
 @keyframes reveal {
   0% {
-    opacity: 0;
+    visibility: hidden;
     width: 0;
-  }
-
-  99% {
-    opacity: 0;
-    width: 0;
+    display: inline;
   }
 
   100% {
-    opacity: 1;
+    visibility: visible;
     width: auto;
     display: inline;
   }

@@ -5,7 +5,7 @@ use crate::components::Template;
 #[derive(Properties, PartialEq)]
 pub struct ConsoleProps {
     pub text: String,
-    #[prop_or(250)]
+    #[prop_or(100)]
     pub delay: usize,
 }
 
@@ -15,9 +15,8 @@ pub fn console(props: &ConsoleProps) -> Html {
     html!(
         <div class="console">
             {for s.chars().enumerate().map(|(ix, c)| html!(
-                <span class="console__character" style={format!("animation: reveal {}ms linear", ix*props.delay)}>{c}</span>
+                <span class="console__character" style={format!("animation-duration: {}ms", (ix+1)*props.delay)}>{c}</span>
             ))}
-            <span class="console__cursor" style={format!("animation-duration: {}ms", 1000)}>{"\u{00a0}"}</span>
         </div>
     )
 }
