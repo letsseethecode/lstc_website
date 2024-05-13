@@ -6,18 +6,18 @@ SCOPE ?= per_environment
 MAKE_FILES := $(shell find . -name "*.mk")
 include $(MAKE_FILES)
 
-BUILD_OUTPUT := $(API_OUTPUT) $(WEB_OUTPUT)
+BUILD_OUTPUT := $(WEB_OUTPUT)
 
-install: api--install web--install						## Install the pre-requisites
+install: web--install									## Install the pre-requisites
 
 clean: per_environment--clean api--clean web--clean		## Remove all the compiled artifacts
 	rm .cache/*
 
 build: $(BUILD_OUTPUT) 									## Build the project
 
-pack: api--pack web--pack								## Pack assets, ready for publishing
+pack: web--pack											## Pack assets, ready for publishing
 
-publish: api--publish web--publish 						## Publish assets to repositories (e.g. ECR)
+publish: web--publish 									## Publish assets to repositories (e.g. ECR)
 
 init: workspace $(SCOPE)--init 							## Initialise the Terraform
 
