@@ -15,7 +15,7 @@ $(API_OUTPUT): $(SRC_FILES)
 	cd lstc-api && \
 	cargo build --release
 
-.cache/api--pack__%: $(API_OUTPUT)
+.cache/api--pack__%: infrastructure/2_per_account/output.json $(API_OUTPUT)
 	docker build lstc-api/. -t "lstc-api:${*}" -t "${ECR_URL}:${*}"
 	touch $@
 
@@ -32,8 +32,8 @@ api--install:												## Install pre-requisites for lstc-api
 	echo "Not implemented"
 
 api--clean:													## Clean up the API files
-	rm -rf lstc-api/target/*
-	rm -f .cache/api--*
+	rm -rf lstc-api/target/* || true
+	rm -f .cache/api--* || true
 
 api--build: $(API_OUTPUT)									## Compile the API
 

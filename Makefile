@@ -11,7 +11,7 @@ BUILD_OUTPUT := $(WEB_OUTPUT)
 install: web--install									## Install the pre-requisites
 
 clean: per_environment--clean api--clean web--clean		## Remove all the compiled artifacts
-	rm .cache/*
+	rm .cache/* || true
 
 build: $(BUILD_OUTPUT) 									## Build the project
 

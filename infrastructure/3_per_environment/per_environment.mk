@@ -7,7 +7,7 @@ API_VERSION	?= $(shell grep -E "^version" lstc-api/Cargo.toml | grep -Eo "[0-9+]
 WEB_VERSION	?= $(shell grep -E "^version" lstc-web/Cargo.toml | grep -Eo "[0-9+]\.[0-9+]\.[0-9+]")
 
 per_environment--clean:
-	rm infrastructure/3_per_environment/per_environment__*.tfplan
+	rm infrastructure/3_per_environment/per_environment__*.tfplan || true
 
 per_environment--init:
 	cd infrastructure/3_per_environment && \
