@@ -25,7 +25,7 @@ resource "aws_iam_role_policy_attachment" "lstc__event-get__lambda-log" {
 
 data "archive_file" "lstc__event-get" {
   type        = "zip"
-  source_dir  = "${path.module}/../../api/lstc/event_get/out"
+  source_dir  = "${path.module}/../../api/lstc/event-get/out"
   output_path = "${path.module}/output/lstc__event-get.zip"
 }
 
