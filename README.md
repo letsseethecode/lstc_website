@@ -17,6 +17,14 @@ Install the pre-requisites using.
 ```sh
 make install
 ```
+Now we must run terraform to generate the assets, such as the Elastic Container
+Registries and DNS records.  We will need the ECRs specifically in the
+subsequent steps.  The `DOMAIN` parameter is optional and can be used to
+specify any domain name you like.
+```sh
+DOMAIN=letsseethecode.com SCOPE=per_account make plan
+SCOPE=per_account make apply
+```
 
 Build the project
 ```sh
