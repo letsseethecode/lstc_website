@@ -4,9 +4,11 @@ resource "aws_api_gateway_rest_api" "lstc" {
   body = templatefile(
     "../../api/lstc/swagger.yaml",
     {
-      environment       = local.environment
-      method_event-list = "arn:aws:apigateway:eu-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-2:${var.account}:function:${local.prefix}--api--lstc--event-list/invocations"
-      method_event-get  = "arn:aws:apigateway:eu-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-2:${var.account}:function:${local.prefix}--api--lstc--event-get/invocations"
+      environment                  = local.environment
+      method_event-list            = "arn:aws:apigateway:eu-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-2:${var.account}:function:${local.prefix}--api--lstc--event-list/invocations"
+      method_event-get             = "arn:aws:apigateway:eu-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-2:${var.account}:function:${local.prefix}--api--lstc--event-get/invocations"
+      Access_Control_Allow_Headers = var.cors-headers
+      Access_Control_Allow_Origin  = var.cors-origin
     }
   )
 }

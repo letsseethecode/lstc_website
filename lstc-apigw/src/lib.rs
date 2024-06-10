@@ -1,6 +1,7 @@
+use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Warning {
     pub message: String,
 }
@@ -13,7 +14,7 @@ impl Warning {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Fault {
     pub message: String,
 }
@@ -26,7 +27,7 @@ impl Fault {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Envelope<D> {
     pub message: String,
     pub warnings: Vec<Warning>,
@@ -34,9 +35,9 @@ pub struct Envelope<D> {
     pub data: D,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct Event {
-    pub date: String,
+    pub date: NaiveDate,
     pub headline: String,
     pub body: String,
 }
@@ -44,7 +45,7 @@ pub struct Event {
 impl Event {
     pub fn new<S: ToString>(date: S, headline: S, body: S) -> Self {
         Event {
-            date: date.to_string(),
+            date: NaiveDate::parse_from_str(date.to_string().as_str(), "%Y-%m-%d").expect("date"),
             headline: headline.to_string(),
             body: body.to_string(),
         }

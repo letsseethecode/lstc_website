@@ -7,7 +7,7 @@ pub struct TemplateProps {
 }
 
 #[function_component(Template)]
-pub fn template(props: &TemplateProps) -> Html {
+pub fn template(props: &TemplateProps) -> Html { 
     html!(
         <div class="template">
             <header class="template__header">

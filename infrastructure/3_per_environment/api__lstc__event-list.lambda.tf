@@ -44,7 +44,10 @@ resource "aws_lambda_function" "lstc__event-list" {
   # }
   environment {
     variables = {
-      PREFIX = local.prefix
+      PREFIX                       = local.prefix
+      Access_Control_Allow_Methods = "GET,OPTIONS"
+      Access_Control_Allow_Headers = var.cors-headers
+      Access_Control_Allow_Origin  = var.cors-origin
     }
   }
 }

@@ -42,3 +42,15 @@ variable "web-memory" {
   type        = number
   description = "Memory for WEB in MB"
 }
+
+variable "cors-headers" {
+  type        = string
+  description = "Access-Control-Allow-Headers"
+  default     = "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token"
+}
+
+variable "cors-origin" {
+  type        = string
+  description = "Access-Control-Allow-Origin"
+  default     = "*"
+}
