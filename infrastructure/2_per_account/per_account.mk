@@ -8,7 +8,8 @@ per_account--clean:
 
 per_account--init:
 	cd infrastructure/2_per_account && \
-	terraform init \
+	terraform workspace select -or-create=true ${ACCOUNT} && \
+	terraform init ${ARGS} \
 		-var-file=./vars/${ACCOUNT}.tfvars
 
 infrastructure/2_per_account/per_account.tfplan: $(SRC_FILES)
