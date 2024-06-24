@@ -46,8 +46,8 @@ resource "aws_lambda_function" "lstc__event-get" {
     variables = {
       PREFIX                       = local.prefix
       Access_Control_Allow_Methods = "GET,OPTIONS"
-      Access_Control_Allow_Headers = "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token"
-      Access_Control_Allow_Origin  = "*"
+      Access_Control_Allow_Headers = var.cors-headers
+      Access_Control_Allow_Origin  = var.cors-origin
     }
   }
 }
