@@ -25,3 +25,5 @@ tracing-subscriber = { version = "0.3", default-features = false, features = [
     "fmt",
 ] }
 lstc_apigw = { path = "../../../lstc-apigw" }
+aws-sdk-dynamodb = "1.36.0"
+aws-config = "1.5.3"

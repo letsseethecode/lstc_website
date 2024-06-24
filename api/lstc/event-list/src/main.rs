@@ -1,24 +1,55 @@
-use lambda_http::{run, service_fn, Body, Error, Request, Response};
+use aws_config::BehaviorVersion;
+use aws_sdk_dynamodb::{types::AttributeValue, Client};
+use lambda_http::{run, service_fn, Body, Error, Request, RequestExt, Response};
 use lstc_apigw::*;
 
 async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
-    let body = Envelope::<Vec<Event>> {
-        message: "Ok".to_string(),
-        warnings: vec![Warning::new("This endpoint is mocked")],
-        faults: vec![],
-        data: vec![
-            Event::new("2024-08-19", "August 2024 (in-person)", "Welcome"),
-            Event::new("2024-07-15", "July 2024 (in-person)", "Body"),
-            Event::new("2024-06-07", "June 2024 (in-person)", "Body"),
-            Event::new("2024-05-20", "May 2024 (in-person)", "Body"),
-            Event::new("2024-04-15", "April 2024 (in-person)", "Body"),
-            Event::new("2024-03-18", "March 2024 (in-person)", "Body"),
-        ],
-    };
+    let params = event.path_parameters();
+    let year = params.first("year").unwrap();
 
     let headers = std::env::var("Access_Control_Allow_Headers").unwrap();
     let methods = std::env::var("Access_Control_Allow_Methods").unwrap();
     let origin = std::env::var("Access_Control_Allow_Origin").unwrap();
+    let table_name = std::env::var("TABLE_NAME").unwrap();
+
+    let config = aws_config::defaults(BehaviorVersion::v2024_03_28())
+        .load()
+        .await;
+    let client = Client::new(&config);
+    let results = client
+        .query()
+        .table_name(table_name)
+        .key_condition_expression("#pk = :pk")
+        .expression_attribute_names("#pk", "pk")
+        .expression_attribute_values(":pk", AttributeValue::S(format!("E#{}", year)))
+        .send()
+        .await
+        .unwrap();
+
+    let body = if let Some(items) = results.items {
+        Envelope::<Vec<Event>> {
+            message: "Ok".to_string(),
+            warnings: vec![Warning::new("This endpoint is mocked")],
+            faults: vec![],
+            data: items
+                .iter()
+                .map(|item| {
+                    Event::new(
+                        item.get("sk").unwrap().as_s().unwrap().to_string(),
+                        item.get("header").unwrap().as_s().unwrap().to_string(),
+                        "".to_string(),
+                    )
+                })
+                .collect(),
+        }
+    } else {
+        Envelope::<Vec<Event>> {
+            message: "Ok".to_string(),
+            warnings: vec![Warning::new("This endpoint is mocked")],
+            faults: vec![],
+            data: vec![],
+        }
+    };
 
     let resp = Response::builder()
         .status(200)
@@ -41,4 +72,42 @@ async fn main() -> Result<(), Error> {
         .init();
 
     run(service_fn(function_handler)).await
+}
+
+#[cfg(test)]
+mod test {
+    use aws_config::BehaviorVersion;
+    use aws_sdk_dynamodb::{types::AttributeValue, Client};
+
+    #[tokio::test]
+    async fn do_it_do_it_now() {
+        let config = aws_config::defaults(BehaviorVersion::v2024_03_28())
+            .load()
+            .await;
+        let client = Client::new(&config);
+        let results = client
+            .query()
+            .table_name("lstc_website--www--data")
+            .key_condition_expression("#pk = :pk")
+            .expression_attribute_names("#pk", "pk")
+            .expression_attribute_values(":pk", AttributeValue::S("E#2024".to_string()))
+            .send()
+            .await
+            .unwrap();
+
+        if let Some(items) = results.items {
+            println!("Results");
+            for item in items {
+                println!(
+                    "pk={:?}, sk={:?}, header={:?}",
+                    item.get("pk").unwrap(),
+                    item.get("sk").unwrap(),
+                    item.get("header").unwrap()
+                );
+                println!("{:?}", item);
+            }
+        } else {
+            println!("No results!!");
+        }
+    }
 }
