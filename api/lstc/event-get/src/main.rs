@@ -26,15 +26,16 @@ async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
         ),
     };
 
+    let headers = std::env::var("Access_Control_Allow_Headers").unwrap();
+    let methods = std::env::var("Access_Control_Allow_Methods").unwrap();
+    let origin = std::env::var("Access_Control_Allow_Origin").unwrap();
+
     let resp = Response::builder()
         .status(200)
         .header("content-type", "application/json")
-        .header(
-            "Access-Control-Allow-Headers",
-            "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
-        )
-        .header("Access-Control-Allow-Methods", "GET,OPTIONS")
-        .header("Access-Control-Allow-Origin", "*")
+        .header("Access-Control-Allow-Headers", headers)
+        .header("Access-Control-Allow-Methods", methods)
+        .header("Access-Control-Allow-Origin", origin)
         .body(serde_json::to_string(&body).unwrap().into())
         .map_err(Box::new)?;
 
