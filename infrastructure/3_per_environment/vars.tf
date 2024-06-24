@@ -13,21 +13,6 @@ variable "subnet-pair-count" {
   description = "The number of pairs (private/public) subnets to be created"
 }
 
-variable "api-desired-count" {
-  type        = number
-  description = "The number of APIs to be deployed"
-}
-
-variable "api-cpu" {
-  type        = number
-  description = "Size of the CPU for the API (256 = 0.25 vCPU)"
-}
-
-variable "api-memory" {
-  type        = number
-  description = "Memory for API in MB"
-}
-
 variable "web-desired-count" {
   type        = number
   description = "The number of WEB servers to be deployed"

@@ -36,8 +36,8 @@ resource "aws_ecs_task_definition" "web" {
   task_role_arn            = aws_iam_role.api_ecs_web_task.arn
   execution_role_arn       = aws_iam_role.api_ecs_execution.arn
   network_mode             = "awsvpc"
-  cpu                      = var.api-cpu
-  memory                   = var.api-memory
+  cpu                      = var.web-cpu
+  memory                   = var.web-memory
   requires_compatibilities = ["FARGATE"]
   runtime_platform {
     operating_system_family = "LINUX"
