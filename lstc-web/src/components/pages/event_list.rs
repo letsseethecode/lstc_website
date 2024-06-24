@@ -1,43 +1,64 @@
-use yew::{function_component, html, Html};
-
-use crate::app::{Link, Route};
 use crate::components::{Console, Template};
+use crate::state::{State, StateAction, StateClient, StateReducer};
+use crate::{
+    app::{Link, Route},
+    config::Config,
+};
+use chrono::{Datelike, Local};
+use gloo_net::http::Request;
+use lstc_apigw::{Envelope, Event};
+use yew::{function_component, html, use_context, use_effect_with, use_state, Html};
 
 #[function_component(EventListPage)]
 pub fn event_list() -> Html {
+    let today = Local::now().date_naive();
+    let state = use_context::<StateClient>().expect("State missing");
+    {
+        let state = state.clone();
+        use_effect_with((), move |_| {
+            wasm_bindgen_futures::spawn_local(async move {
+                state.load_events(today.year()).await;
+            });
+        });
+    }
+    let past = state
+        .reducer
+        .current_event_list
+        .iter()
+        .filter(|e| e.date < today);
+    let future = state
+        .reducer
+        .current_event_list
+        .iter()
+        .filter(|e| e.date >= today);
     html!(
         <Template>
             <h3><Console text="Events" /></h3>
-            <h4>{"upcoming events"}</h4>
+            <h4>{"Future Events"}</h4>
             <table>
-                <tr>
-                    <td><Link to={Route::EventView { id: "2024-04-01".to_string() }}>{"2024-04-01"}</Link></td>
-                    <td>{"online"}</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td><Link to={Route::EventView { id: "2024-04-08".to_string() }}>{"2024-04-08"}</Link></td>
-                    <td>{"online"}</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td><Link to={Route::EventView { id: "2024-04-15".to_string() }}>{"2024-04-15"}</Link></td>
-                    <td>{"online"}</td>
-                    <td>{"in-person"}</td>
-                </tr>
+                {future.map(|event| html!(
+                    <tr>
+                        <td width={200}>
+                            <Link to={Route::EventView { id: event.date.to_string() }}>
+                                {event.date.to_string()}
+                            </Link>
+                        </td>
+                        <td>{event.headline.clone()}</td>
+                    </tr>
+                )).collect::<Html>()}
             </table>
-            <h4>{"past events"}</h4>
+            <h4>{"Past Events"}</h4>
             <table>
-                <tr>
-                    <td><Link to={Route::EventView { id: "2024-03-25".to_string() }}>{"2024-03-25"}</Link></td>
-                    <td>{"online"}</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td><Link to={Route::EventView { id: "2024-04-18".to_string() }}>{"2024-04-18"}</Link></td>
-                    <td>{"online"}</td>
-                    <td>{"in-person"}</td>
-                </tr>
+                {past.map(|event| html!(
+                    <tr>
+                        <td width={200}>
+                            <Link to={Route::EventView { id: event.date.to_string() }}>
+                                {event.date.to_string()}
+                            </Link>
+                        </td>
+                        <td>{event.headline.clone()}</td>
+                    </tr>
+                )).collect::<Html>()}
             </table>
         </Template>
     )
