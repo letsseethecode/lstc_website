@@ -11,6 +11,12 @@
 		},
 		{
 			"path": "lstc-web"
+		},
+		{
+			"path": "lstc-domain"
+		},
+		{
+			"path": "infrastructure"
 		}
 	],
 	"settings": {}

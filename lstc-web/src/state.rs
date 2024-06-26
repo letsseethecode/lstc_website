@@ -1,6 +1,6 @@
 use chrono::{Datelike, NaiveDate};
 use gloo_net::http::Request;
-use lstc_apigw::{Envelope, Event};
+use lstc_domain::{Envelope, Event};
 use yew::{Reducible, UseReducerHandle};
 
 #[derive(Debug, Clone, PartialEq)]

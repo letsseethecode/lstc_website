@@ -6,7 +6,7 @@ use crate::{
 };
 use chrono::{Datelike, Local};
 use gloo_net::http::Request;
-use lstc_apigw::{Envelope, Event};
+use lstc_domain::Event;
 use yew::{function_component, html, use_context, use_effect_with, use_state, Html};
 
 #[function_component(EventListPage)]

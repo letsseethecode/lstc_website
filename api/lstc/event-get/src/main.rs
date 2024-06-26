@@ -2,6 +2,7 @@ use aws_config::BehaviorVersion;
 use aws_sdk_dynamodb::{types::AttributeValue, Client};
 use lambda_http::{run, service_fn, Body, Error, Request, RequestExt, Response};
 use lstc_apigw::*;
+use lstc_domain::*;
 
 async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
     let params = event.path_parameters();

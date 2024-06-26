@@ -1,5 +1,5 @@
 use chrono::{Date, Datelike, NaiveDate};
-use lstc_apigw::Event;
+use lstc_domain::Event;
 use yew::{function_component, html, use_context, use_effect_with, use_state, Html, Properties};
 
 use crate::{
