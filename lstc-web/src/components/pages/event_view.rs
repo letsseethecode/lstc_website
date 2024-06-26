@@ -33,7 +33,7 @@ pub fn event_view(props: &EventViewPageProps) -> Html {
                 html!(
                     <>
                         <h3><Console text={e.date.clone().to_string()} /></h3>
-                        <h4>{e.headline.clone()}</h4>
+                        <h4>{e.title.clone()}</h4>
                         <pre>{e.body.clone()}</pre>
                     </>
                 )

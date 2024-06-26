@@ -16,7 +16,7 @@ async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
         .load()
         .await;
     let client = Client::new(&config);
-    let results = client
+    let response = client
         .query()
         .table_name(table_name)
         .key_condition_expression("#pk = :pk")
@@ -26,7 +26,7 @@ async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
         .await
         .unwrap();
 
-    let body = if let Some(items) = results.items {
+    let body = if let Some(items) = response.items {
         Envelope::<Vec<Event>> {
             message: "Ok".to_string(),
             warnings: vec![Warning::new("This endpoint is mocked")],
@@ -36,7 +36,8 @@ async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
                 .map(|item| {
                     Event::new(
                         item.get("sk").unwrap().as_s().unwrap().to_string(),
-                        item.get("header").unwrap().as_s().unwrap().to_string(),
+                        item.get("title").unwrap().as_s().unwrap().to_string(),
+                        item.get("sub_title").unwrap().as_s().unwrap().to_string(),
                         "".to_string(),
                     )
                 })

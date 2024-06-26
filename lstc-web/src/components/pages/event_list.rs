@@ -43,7 +43,7 @@ pub fn event_list() -> Html {
                                 {event.date.to_string()}
                             </Link>
                         </td>
-                        <td>{event.headline.clone()}</td>
+                        <td>{event.title.clone()}</td>
                     </tr>
                 )).collect::<Html>()}
             </table>
@@ -56,7 +56,7 @@ pub fn event_list() -> Html {
                                 {event.date.to_string()}
                             </Link>
                         </td>
-                        <td>{event.headline.clone()}</td>
+                        <td>{event.title.clone()}</td>
                     </tr>
                 )).collect::<Html>()}
             </table>
