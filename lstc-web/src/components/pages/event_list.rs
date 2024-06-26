@@ -1,5 +1,5 @@
 use crate::components::{Console, Template};
-use crate::state::{State, StateAction, StateClient, StateReducer};
+use crate::state::{State, StateAction, StateClient};
 use crate::{
     app::{Link, Route},
     config::Config,

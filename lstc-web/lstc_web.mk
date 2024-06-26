@@ -10,7 +10,7 @@ $(WEB_OUTPUT): $(SRC_FILES)
 	trunk build --release
 
 .cache/web--pack__%: infrastructure/2_per_account/output.json $(WEB_OUTPUT)
-	docker build lstc-web/. -t "lstc-web:${*}" -t "lstc-web:latest" -t "${WEB_ECR_URL}:${*}"
+	docker build . -f lstc-web/Dockerfile -t "lstc-web:${*}" -t "lstc-web:latest" -t "${WEB_ECR_URL}:${*}"
 	touch $@
 
 .cache/web--publish__%: .cache/web--pack__%

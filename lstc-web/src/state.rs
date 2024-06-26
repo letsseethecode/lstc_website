@@ -17,8 +17,6 @@ pub enum StateAction {
     LoadEvents(i32, Vec<Event>),
 }
 
-pub type StateReducer = UseReducerHandle<State>;
-
 #[derive(Debug, Clone, PartialEq)]
 pub struct StateClient {
     pub base_url: String,

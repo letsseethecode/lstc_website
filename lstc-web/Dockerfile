@@ -26,7 +26,8 @@ RUN adduser \
     --uid "${UID}" \
     "${USER}"
 
-COPY . .
+COPY ./lstc-web .
+COPY ./lstc-domain /lstc-domain
 
 ENV RUSTFLAGS='-C link-arg=-s'
 RUN cargo install --path .
