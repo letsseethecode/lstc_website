@@ -23,6 +23,11 @@ resource "aws_iam_role_policy_attachment" "lstc__event-list__lambda-log" {
   policy_arn = aws_iam_policy.lambda-logs.arn
 }
 
+resource "aws_iam_role_policy_attachment" "lstc__event-list__data-read" {
+  role       = aws_iam_role.lstc__event-list__role.name
+  policy_arn = aws_iam_policy.data--dynamodb-read.arn
+}
+
 data "archive_file" "lstc__event-list" {
   type        = "zip"
   source_dir  = "${path.module}/../../api/lstc/event-list/out"
@@ -48,6 +53,7 @@ resource "aws_lambda_function" "lstc__event-list" {
       Access_Control_Allow_Methods = "GET,OPTIONS"
       Access_Control_Allow_Headers = var.cors-headers
       Access_Control_Allow_Origin  = var.cors-origin
+      TABLE_NAME                   = aws_dynamodb_table.data.name
     }
   }
 }

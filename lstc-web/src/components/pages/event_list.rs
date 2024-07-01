@@ -1,12 +1,12 @@
 use crate::components::{Console, Template};
-use crate::state::{State, StateAction, StateClient, StateReducer};
+use crate::state::{State, StateAction, StateClient};
 use crate::{
     app::{Link, Route},
     config::Config,
 };
 use chrono::{Datelike, Local};
 use gloo_net::http::Request;
-use lstc_apigw::{Envelope, Event};
+use lstc_domain::Event;
 use yew::{function_component, html, use_context, use_effect_with, use_state, Html};
 
 #[function_component(EventListPage)]
@@ -43,7 +43,7 @@ pub fn event_list() -> Html {
                                 {event.date.to_string()}
                             </Link>
                         </td>
-                        <td>{event.headline.clone()}</td>
+                        <td>{event.title.clone()}</td>
                     </tr>
                 )).collect::<Html>()}
             </table>
@@ -56,7 +56,7 @@ pub fn event_list() -> Html {
                                 {event.date.to_string()}
                             </Link>
                         </td>
-                        <td>{event.headline.clone()}</td>
+                        <td>{event.title.clone()}</td>
                     </tr>
                 )).collect::<Html>()}
             </table>

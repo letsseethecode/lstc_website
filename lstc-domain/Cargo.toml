@@ -1,18 +1,11 @@
 [package]
-name = "lstc_apigw"
+name = "lstc_domain"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-lstc_domain = { path = "../lstc-domain" }
 chrono = { version = "0.4.38", features = ["serde"] }
 serde = { version = "1.0.201", features = ["derive"] }
 serde_json = "1.0.117"
-aws-config = "1.5.3"
-aws-sdk-dynamodb = "1.36.0"
-lambda_http = "0.8.3"
-
-[dev-dependencies]
-tokio = { version = "1", features = ["macros"] }

@@ -1,35 +1,44 @@
-use lambda_http::{run, service_fn, Body, Error, Request, Response};
-use lstc_apigw::*;
+use aws_config::BehaviorVersion;
+use lambda_http::{
+    aws_lambda_events::query_map::QueryMap, run, service_fn, Body, Error, Request, RequestExt,
+    Response,
+};
+use lstc_apigw::{parse_path, render_response, ApiError, Config, CorsHeaders, Outcome, Repository};
+use lstc_domain::*;
+
+pub struct Params {
+    pub year: i32,
+}
+
+impl Params {
+    pub fn from_path_parameters(params: &QueryMap) -> Result<Self, ApiError> {
+        Ok(Self {
+            year: parse_path(params, "year")?,
+        })
+    }
+}
 
 async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
-    let body = Envelope::<Vec<Event>> {
-        message: "Ok".to_string(),
-        warnings: vec![Warning::new("This endpoint is mocked")],
-        faults: vec![],
-        data: vec![
-            Event::new("2024-08-19", "August 2024 (in-person)", "Welcome"),
-            Event::new("2024-07-15", "July 2024 (in-person)", "Body"),
-            Event::new("2024-06-07", "June 2024 (in-person)", "Body"),
-            Event::new("2024-05-20", "May 2024 (in-person)", "Body"),
-            Event::new("2024-04-15", "April 2024 (in-person)", "Body"),
-            Event::new("2024-03-18", "March 2024 (in-person)", "Body"),
-        ],
+    let cors = CorsHeaders::load_from_env().unwrap_or(CorsHeaders::empty());
+    let outcome = match execute(event).await {
+        Err(err) => Outcome::Error(err),
+        Ok(item) => Outcome::Ok(item),
     };
+    let response = render_response(outcome, &cors);
+    Ok(response)
+}
 
-    let headers = std::env::var("Access_Control_Allow_Headers").unwrap();
-    let methods = std::env::var("Access_Control_Allow_Methods").unwrap();
-    let origin = std::env::var("Access_Control_Allow_Origin").unwrap();
+async fn execute(event: Request) -> Result<Vec<Event>, ApiError> {
+    let params = Params::from_path_parameters(&event.path_parameters())?;
+    let config = Config::load_from_env().unwrap();
 
-    let resp = Response::builder()
-        .status(200)
-        .header("content-type", "application/json")
-        .header("Access-Control-Allow-Headers", headers)
-        .header("Access-Control-Allow-Methods", methods)
-        .header("Access-Control-Allow-Origin", origin)
-        .body(serde_json::to_string(&body).unwrap().into())
-        .map_err(Box::new)?;
+    let sdk = aws_config::defaults(BehaviorVersion::v2024_03_28())
+        .load()
+        .await;
+    let repo = Repository::<Event>::new(&sdk, config.table_name);
+    let pk = format!("E#{}", params.year);
 
-    Ok(resp)
+    repo.query(pk).await
 }
 
 #[tokio::main]

@@ -1,53 +1,88 @@
-use chrono::NaiveDate;
-use serde::{Deserialize, Serialize};
+mod cors;
+mod repository;
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Warning {
-    pub message: String,
+use std::str::FromStr;
+
+pub use cors::*;
+use lstc_domain::Envelope;
+pub use repository::*;
+
+use lambda_http::{aws_lambda_events::query_map::QueryMap, Body, Response};
+use serde::Serialize;
+
+pub struct Config {
+    pub table_name: String,
 }
 
-impl Warning {
-    pub fn new<S: ToString>(message: S) -> Self {
-        Warning {
-            message: message.to_string(),
-        }
+impl Config {
+    pub fn load_from_env() -> Result<Self, ApiError> {
+        Ok(Self {
+            table_name: std::env::var("TABLE_NAME").map_err(|_| ApiError::BadEnv("TABLE_NAME"))?,
+        })
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Fault {
-    pub message: String,
+pub fn parse_path<T: FromStr>(params: &QueryMap, name: &'static str) -> Result<T, ApiError> {
+    params
+        .first(name)
+        .ok_or(ApiError::MissingPath(name))
+        .map(|v| v.parse::<T>().map_err(|_| ApiError::BadPath(name)))?
 }
 
-impl Fault {
-    pub fn new<S: ToString>(message: S) -> Self {
-        Fault {
-            message: message.to_string(),
+#[derive(Debug, Serialize)]
+pub enum ApiError {
+    MissingPath(&'static str),
+    BadPath(&'static str),
+    BadEnv(&'static str),
+    DatabaseError,
+}
+
+pub enum Outcome<T> {
+    Ok(T),
+    NotFound,
+    Error(ApiError),
+}
+
+pub fn render_response<T: Serialize>(outcome: Outcome<T>, cors: &CorsHeaders) -> Response<Body> {
+    let builder = Response::builder()
+        .header("content-type", "application/json")
+        .header("Access-Control-Allow-Headers", &cors.headers)
+        .header("Access-Control-Allow-Methods", &cors.methods)
+        .header("Access-Control-Allow-Origin", &cors.origin);
+    let builder = match outcome {
+        Outcome::Ok(data) => {
+            let body = Envelope {
+                message: "OK".to_string(),
+                warnings: vec![],
+                faults: vec![],
+                data,
+            };
+            builder
+                .status(200)
+                .body(serde_json::to_string(&body).unwrap().into())
         }
-    }
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Envelope<D> {
-    pub message: String,
-    pub warnings: Vec<Warning>,
-    pub faults: Vec<Fault>,
-    pub data: D,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
-pub struct Event {
-    pub date: NaiveDate,
-    pub headline: String,
-    pub body: String,
-}
-
-impl Event {
-    pub fn new<S: ToString>(date: S, headline: S, body: S) -> Self {
-        Event {
-            date: NaiveDate::parse_from_str(date.to_string().as_str(), "%Y-%m-%d").expect("date"),
-            headline: headline.to_string(),
-            body: body.to_string(),
+        Outcome::NotFound => {
+            let body = Envelope {
+                message: "Not Found".to_string(),
+                warnings: vec![],
+                faults: vec![],
+                data: (),
+            };
+            builder
+                .status(404)
+                .body(serde_json::to_string(&body).unwrap().into())
         }
-    }
+        Outcome::Error(error) => {
+            let body = Envelope {
+                message: "Internal Server Error".to_string(),
+                warnings: vec![],
+                faults: vec![],
+                data: error,
+            };
+            builder
+                .status(500)
+                .body(serde_json::to_string(&body).unwrap().into())
+        }
+    };
+    builder.map_err(Box::new).unwrap()
 }

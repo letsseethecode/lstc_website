@@ -1,0 +1,26 @@
+{
+	"folders": [
+		{
+			"path": "api/lstc/event-list"
+		},
+		{
+			"path": "api/lstc/event-get"
+		},
+		{
+			"path": "lstc-apigw"
+		},
+		{
+			"path": "lstc-web"
+		},
+		{
+			"path": "lstc-domain"
+		},
+		{
+			"path": "infrastructure"
+		},
+		{
+			"path": "../events/streams"
+		}
+	],
+	"settings": {}
+}

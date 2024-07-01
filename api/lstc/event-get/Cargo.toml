@@ -15,6 +15,8 @@ edition = "2021"
 # and it will keep the alphabetic ordering for you.
 
 [dependencies]
+lstc_apigw = { path = "../../../lstc-apigw" }
+lstc_domain = { path = "../../../lstc-domain" }
 lambda_http = "0.8.3"
 lambda_runtime = "0.8.3"
 serde = "1.0.193"
@@ -24,4 +26,5 @@ tracing = { version = "0.1", features = ["log"] }
 tracing-subscriber = { version = "0.3", default-features = false, features = [
     "fmt",
 ] }
-lstc_apigw = { path = "../../../lstc-apigw" }
+aws-sdk-dynamodb = "1.36.0"
+aws-config = "1.5.3"

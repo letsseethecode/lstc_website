@@ -1,7 +1,7 @@
 use crate::{
     components::{EventListPage, EventViewPage, HomePage, NotFoundPage},
     config::Config,
-    state::{State, StateClient, StateReducer},
+    state::{State, StateClient},
 };
 use yew::prelude::*;
 use yew_router::{BrowserRouter, Routable, Switch};
