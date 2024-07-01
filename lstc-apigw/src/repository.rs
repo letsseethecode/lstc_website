@@ -4,6 +4,8 @@ use chrono::NaiveDate;
 use lstc_domain::Event;
 use std::{collections::HashMap, marker::PhantomData};
 
+use crate::ApiError;
+
 pub trait Record {
     fn pk(&self) -> String;
     fn sk(&self) -> String;
@@ -79,7 +81,7 @@ impl<T: Record> Repository<T> {
             .unwrap();
     }
 
-    pub async fn load(&self, pk: String, sk: String) -> Option<T> {
+    pub async fn load(&self, pk: String, sk: String) -> Result<Option<T>, ApiError> {
         let response = self
             .client
             .get_item()
@@ -88,11 +90,11 @@ impl<T: Record> Repository<T> {
             .key("sk", AttributeValue::S(sk))
             .send()
             .await
-            .unwrap();
-        response.item().map(T::from_hashmap)
+            .map_err(|_| ApiError::DatabaseError)?;
+        Ok(response.item().map(T::from_hashmap))
     }
 
-    pub async fn query(&self, pk: String) -> Vec<T> {
+    pub async fn query(&self, pk: String) -> Result<Vec<T>, ApiError> {
         let response = self
             .client
             .query()
@@ -102,13 +104,14 @@ impl<T: Record> Repository<T> {
             .expression_attribute_values(":pk", AttributeValue::S(pk))
             .send()
             .await
-            .unwrap();
-        response
+            .map_err(|_| ApiError::DatabaseError)?;
+        let items = response
             .items
             .unwrap()
             .iter()
             .map(T::from_hashmap)
-            .collect()
+            .collect();
+        Ok(items)
     }
 }
 
@@ -135,10 +138,11 @@ mod test {
         let item = repo
             .load("E#2024".to_string(), "2024-01-01".to_string())
             .await
+            .unwrap()
             .unwrap();
         println!("> {} {} {}", item.date, item.title, item.sub_title);
 
-        let items = repo.query("E#2024".to_string()).await;
+        let items = repo.query("E#2024".to_string()).await.unwrap();
         println!("Items");
         for item in items {
             println!("> {} {} {}", item.date, item.title, item.sub_title);

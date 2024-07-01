@@ -14,4 +14,12 @@ impl CorsHeaders {
             origin: std::env::var("Access_Control_Allow_Origin")?,
         })
     }
+
+    pub fn empty() -> Self {
+        Self {
+            headers: "".to_string(),
+            methods: "".to_string(),
+            origin: "".to_string(),
+        }
+    }
 }

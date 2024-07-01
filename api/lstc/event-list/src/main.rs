@@ -1,10 +1,9 @@
 use aws_config::BehaviorVersion;
-use aws_sdk_dynamodb::{types::AttributeValue, Client};
 use lambda_http::{
     aws_lambda_events::query_map::QueryMap, run, service_fn, Body, Error, Request, RequestExt,
     Response,
 };
-use lstc_apigw::{render_response, Config, CorsHeaders, Outcome, Repository};
+use lstc_apigw::{parse_path, render_response, ApiError, Config, CorsHeaders, Outcome, Repository};
 use lstc_domain::*;
 
 pub struct Params {
@@ -12,16 +11,25 @@ pub struct Params {
 }
 
 impl Params {
-    pub fn from_path_parameters(params: &QueryMap) -> Self {
-        Self {
-            year: params.first("year").unwrap().parse::<i32>().unwrap(),
-        }
+    pub fn from_path_parameters(params: &QueryMap) -> Result<Self, ApiError> {
+        Ok(Self {
+            year: parse_path(params, "year")?,
+        })
     }
 }
 
 async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
-    let params = Params::from_path_parameters(&event.path_parameters());
-    let cors = CorsHeaders::load_from_env().unwrap();
+    let cors = CorsHeaders::load_from_env().unwrap_or(CorsHeaders::empty());
+    let outcome = match execute(event).await {
+        Err(err) => Outcome::Error(err),
+        Ok(item) => Outcome::Ok(item),
+    };
+    let response = render_response(outcome, &cors);
+    Ok(response)
+}
+
+async fn execute(event: Request) -> Result<Vec<Event>, ApiError> {
+    let params = Params::from_path_parameters(&event.path_parameters())?;
     let config = Config::load_from_env().unwrap();
 
     let sdk = aws_config::defaults(BehaviorVersion::v2024_03_28())
@@ -30,11 +38,7 @@ async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
     let repo = Repository::<Event>::new(&sdk, config.table_name);
     let pk = format!("E#{}", params.year);
 
-    let items = repo.query(pk).await;
-    let outcome = Outcome::Ok(items);
-
-    let response = render_response(outcome, &cors);
-    Ok(response)
+    repo.query(pk).await
 }
 
 #[tokio::main]
