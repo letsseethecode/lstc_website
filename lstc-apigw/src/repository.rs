@@ -167,12 +167,18 @@ mod test {
     use std::collections::HashMap;
 
     #[tokio::test]
-    async fn test() {
+    async fn populate_dynamo_with_test_data() {
         let repo = Repository::new_from_config("lstc_website--www--data".to_string()).await;
 
-        repo.save(Event::new("2024-01-01", "Jan", "Jan", "")).await;
-        repo.save(Event::new("2024-02-01", "Feb", "Feb", "")).await;
-        repo.save(Event::new("2024-03-01", "Mar", "Mar", "")).await;
+        repo.save(Event::new("2024-01-01", "Jan", "Jan", ""))
+            .await
+            .unwrap();
+        repo.save(Event::new("2024-02-01", "Feb", "Feb", ""))
+            .await
+            .unwrap();
+        repo.save(Event::new("2024-03-01", "Mar", "Mar", ""))
+            .await
+            .unwrap();
 
         let item = repo
             .load("E#2024".to_string(), "2024-01-01".to_string())
@@ -235,9 +241,7 @@ mod test {
 
     #[test]
     fn pk_and_sk() {
-        let subject = Event::new("2024-02-01", "title", "sub_title", "body");
-
-        assert_eq!(Record::pk(&subject), "E#2024");
-        assert_eq!(Record::sk(&subject), "2024-02-01");
+        assert_eq!(event_pk(2024), "E#2024");
+        assert_eq!(event_sk(2024, 2, 1), "2024-02-01");
     }
 }
