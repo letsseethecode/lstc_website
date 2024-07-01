@@ -31,6 +31,7 @@ pub fn parse_path<T: FromStr>(params: &QueryMap, name: &'static str) -> Result<T
 
 #[derive(Debug, Serialize)]
 pub enum ApiError {
+    NotFound,
     MissingPath(&'static str),
     BadPath(&'static str),
     BadEnv(&'static str),

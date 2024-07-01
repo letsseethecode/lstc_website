@@ -1,25 +1,25 @@
-use std::str::FromStr;
-
-use aws_config::BehaviorVersion;
 use lambda_http::{
     aws_lambda_events::query_map::QueryMap, run, service_fn, Body, Error, Request, RequestExt,
     Response,
 };
-use lstc_apigw::{parse_path, render_response, ApiError, Config, CorsHeaders, Outcome, Repository};
-use lstc_domain::*;
+use lstc_apigw::{
+    event_pk, event_sk, parse_path, render_response, ApiError, Config, CorsHeaders, Outcome,
+    Repository,
+};
+use lstc_domain::Event;
 
 pub struct Params {
     pub year: i32,
-    pub month: i32,
-    pub day: i32,
+    pub month: u32,
+    pub day: u32,
 }
 
 impl Params {
     pub fn from_path_parameters(params: &QueryMap) -> Result<Self, ApiError> {
         Ok(Self {
             year: parse_path::<i32>(params, "year")?,
-            month: parse_path::<i32>(params, "month")?,
-            day: parse_path::<i32>(params, "day")?,
+            month: parse_path::<u32>(params, "month")?,
+            day: parse_path::<u32>(params, "day")?,
         })
     }
 }
@@ -38,13 +38,12 @@ async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
 async fn execute(event: Request) -> Result<Option<Event>, ApiError> {
     let params = Params::from_path_parameters(&event.path_parameters())?;
     let config = Config::load_from_env()?;
-    let sdk = aws_config::defaults(BehaviorVersion::v2024_03_28())
-        .load()
-        .await;
-    let repo = Repository::<Event>::new(&sdk, config.table_name);
-    let pk = format!("E#{}", params.year);
-    let sk = format!("{:04}-{:02}-{:02}", params.year, params.month, params.day);
-    repo.load(pk, sk).await
+    let repo = Repository::<Event>::new_from_config(config.table_name).await;
+    repo.load(
+        event_pk(params.year),
+        event_sk(params.year, params.month, params.day),
+    )
+    .await
 }
 
 #[tokio::main]

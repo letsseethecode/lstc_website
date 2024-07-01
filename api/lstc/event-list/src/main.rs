@@ -1,9 +1,10 @@
-use aws_config::BehaviorVersion;
 use lambda_http::{
     aws_lambda_events::query_map::QueryMap, run, service_fn, Body, Error, Request, RequestExt,
     Response,
 };
-use lstc_apigw::{parse_path, render_response, ApiError, Config, CorsHeaders, Outcome, Repository};
+use lstc_apigw::{
+    event_pk, parse_path, render_response, ApiError, Config, CorsHeaders, Outcome, Repository,
+};
 use lstc_domain::*;
 
 pub struct Params {
@@ -30,15 +31,10 @@ async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
 
 async fn execute(event: Request) -> Result<Vec<Event>, ApiError> {
     let params = Params::from_path_parameters(&event.path_parameters())?;
-    let config = Config::load_from_env().unwrap();
+    let config = Config::load_from_env()?;
 
-    let sdk = aws_config::defaults(BehaviorVersion::v2024_03_28())
-        .load()
-        .await;
-    let repo = Repository::<Event>::new(&sdk, config.table_name);
-    let pk = format!("E#{}", params.year);
-
-    repo.query(pk).await
+    let repo = Repository::<Event>::new_from_config(config.table_name).await;
+    repo.query(event_pk(params.year)).await
 }
 
 #[tokio::main]
