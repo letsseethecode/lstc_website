@@ -17,6 +17,9 @@
 		},
 		{
 			"path": "infrastructure"
+		},
+		{
+			"path": "../events/streams"
 		}
 	],
 	"settings": {}

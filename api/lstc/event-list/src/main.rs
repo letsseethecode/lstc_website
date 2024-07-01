@@ -1,67 +1,40 @@
 use aws_config::BehaviorVersion;
 use aws_sdk_dynamodb::{types::AttributeValue, Client};
-use lambda_http::{run, service_fn, Body, Error, Request, RequestExt, Response};
+use lambda_http::{
+    aws_lambda_events::query_map::QueryMap, run, service_fn, Body, Error, Request, RequestExt,
+    Response,
+};
+use lstc_apigw::{render_response, Config, CorsHeaders, Outcome, Repository};
 use lstc_domain::*;
 
+pub struct Params {
+    pub year: i32,
+}
+
+impl Params {
+    pub fn from_path_parameters(params: &QueryMap) -> Self {
+        Self {
+            year: params.first("year").unwrap().parse::<i32>().unwrap(),
+        }
+    }
+}
+
 async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
-    let params = event.path_parameters();
-    let year = params.first("year").unwrap();
+    let params = Params::from_path_parameters(&event.path_parameters());
+    let cors = CorsHeaders::load_from_env().unwrap();
+    let config = Config::load_from_env().unwrap();
 
-    let headers = std::env::var("Access_Control_Allow_Headers").unwrap();
-    let methods = std::env::var("Access_Control_Allow_Methods").unwrap();
-    let origin = std::env::var("Access_Control_Allow_Origin").unwrap();
-    let table_name = std::env::var("TABLE_NAME").unwrap();
-
-    let config = aws_config::defaults(BehaviorVersion::v2024_03_28())
+    let sdk = aws_config::defaults(BehaviorVersion::v2024_03_28())
         .load()
         .await;
-    let client = Client::new(&config);
-    let response = client
-        .query()
-        .table_name(table_name)
-        .key_condition_expression("#pk = :pk")
-        .expression_attribute_names("#pk", "pk")
-        .expression_attribute_values(":pk", AttributeValue::S(format!("E#{}", year)))
-        .send()
-        .await
-        .unwrap();
+    let repo = Repository::<Event>::new(&sdk, config.table_name);
+    let pk = format!("E#{}", params.year);
 
-    let body = if let Some(items) = response.items {
-        Envelope::<Vec<Event>> {
-            message: "Ok".to_string(),
-            warnings: vec![Warning::new("This endpoint is mocked")],
-            faults: vec![],
-            data: items
-                .iter()
-                .map(|item| {
-                    Event::new(
-                        item.get("sk").unwrap().as_s().unwrap().to_string(),
-                        item.get("title").unwrap().as_s().unwrap().to_string(),
-                        item.get("sub_title").unwrap().as_s().unwrap().to_string(),
-                        "".to_string(),
-                    )
-                })
-                .collect(),
-        }
-    } else {
-        Envelope::<Vec<Event>> {
-            message: "Ok".to_string(),
-            warnings: vec![Warning::new("This endpoint is mocked")],
-            faults: vec![],
-            data: vec![],
-        }
-    };
+    let items = repo.query(pk).await;
+    let outcome = Outcome::Ok(items);
 
-    let resp = Response::builder()
-        .status(200)
-        .header("content-type", "application/json")
-        .header("Access-Control-Allow-Headers", headers)
-        .header("Access-Control-Allow-Methods", methods)
-        .header("Access-Control-Allow-Origin", origin)
-        .body(serde_json::to_string(&body).unwrap().into())
-        .map_err(Box::new)?;
-
-    Ok(resp)
+    let response = render_response(outcome, &cors);
+    Ok(response)
 }
 
 #[tokio::main]
@@ -73,42 +46,4 @@ async fn main() -> Result<(), Error> {
         .init();
 
     run(service_fn(function_handler)).await
-}
-
-#[cfg(test)]
-mod test {
-    use aws_config::BehaviorVersion;
-    use aws_sdk_dynamodb::{types::AttributeValue, Client};
-
-    #[tokio::test]
-    async fn do_it_do_it_now() {
-        let config = aws_config::defaults(BehaviorVersion::v2024_03_28())
-            .load()
-            .await;
-        let client = Client::new(&config);
-        let results = client
-            .query()
-            .table_name("lstc_website--www--data")
-            .key_condition_expression("#pk = :pk")
-            .expression_attribute_names("#pk", "pk")
-            .expression_attribute_values(":pk", AttributeValue::S("E#2024".to_string()))
-            .send()
-            .await
-            .unwrap();
-
-        if let Some(items) = results.items {
-            println!("Results");
-            for item in items {
-                println!(
-                    "pk={:?}, sk={:?}, header={:?}",
-                    item.get("pk").unwrap(),
-                    item.get("sk").unwrap(),
-                    item.get("header").unwrap()
-                );
-                println!("{:?}", item);
-            }
-        } else {
-            println!("No results!!");
-        }
-    }
 }
