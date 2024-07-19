@@ -12,6 +12,7 @@ per_environment--clean:
 
 per_environment--init:
 	cd infrastructure/3_per_environment && \
+	terraform workspace select -or-create=true ${*} && \
 	terraform init \
 		-var-file=./vars/${ENV}.tfvars
 

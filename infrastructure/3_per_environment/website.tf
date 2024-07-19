@@ -50,6 +50,12 @@ resource "aws_ecs_task_definition" "web" {
         "image" : "${data.aws_ecr_repository.lstc-web.repository_url}:${var.web-version}",
         "cpu" : "${var.web-cpu}",
         "memory" : "${var.web-memory}",
+        "environment" : [
+          {
+            "name" : "API_BASE_URL",
+            "value" : "${aws_api_gateway_stage.production.invoke_url}"
+          }
+        ],
         "logConfiguration" : {
           "logDriver" : "awslogs",
           "options" : {
