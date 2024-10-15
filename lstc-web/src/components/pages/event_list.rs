@@ -14,12 +14,12 @@ pub fn event_list() -> Html {
     let today = Local::now().date_naive();
     let state = use_context::<StateClient>().expect("State missing");
     {
-        let state = state.clone();
-        use_effect_with((), move |_| {
-            wasm_bindgen_futures::spawn_local(async move {
-                state.load_events(today.year()).await;
-            });
-        });
+        // let state = state.clone();
+        // use_effect_with((), move |_| {
+        //     wasm_bindgen_futures::spawn_local(async move {
+        //         state.load_events(today.year()).await;
+        //     });
+        // });
     }
     let past = state
         .reducer

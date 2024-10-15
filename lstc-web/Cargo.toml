@@ -1,5 +1,5 @@
 [package]
-name = "trunk-template"
+name = "simple_ssr"
 version = "0.1.6"
 edition = "2021"
 description = "Template for starting a Yew project using Trunk"
@@ -9,11 +9,37 @@ license = "MIT OR Apache-2.0"
 keywords = ["yew", "trunk"]
 categories = ["gui", "wasm", "web-programming"]
 
+[[bin]]
+name = "simple_ssr_hydrate"
+required-features = ["hydration"]
+
+[[bin]]
+name = "simple_ssr_server"
+required-features = ["ssr"]
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
 gloo-net = "0.5.0"
 yew = { version = "0.21", features = ["csr", "hydration", "ssr"] }
 yew-router = "0.18.0"
-wasm-bindgen-futures = "0.4.42"
 chrono = { version = "0.4.38", features = ["serde"] }
 lstc_domain = { path = "../lstc-domain" }
+reqwest = { version = "0.11.22", features = ["json"] }
+serde = { version = "1.0.190", features = ["derive"] }
+uuid = { version = "1.5.0", features = ["serde"] }
+futures = "0.3"
+bytes = "1.5"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen-futures = "0.4"
+wasm-logger = "0.2"
+log = "0.4"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+tokio = { version = "1.33.0", features = ["full"] }
+warp = "0.3"
+clap = { version = "4", features = ["derive"] }
+
+[features]
+hydration = ["yew/hydration"]
+ssr = ["yew/ssr"]

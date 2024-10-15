@@ -18,11 +18,11 @@ pub fn event_view(props: &EventViewPageProps) -> Html {
     let state = use_context::<StateClient>().expect("State missing");
     {
         let state = state.clone();
-        use_effect_with((), move |_| {
-            wasm_bindgen_futures::spawn_local(async move {
-                state.load_event(&date).await;
-            });
-        });
+        // use_effect_with((), move |_| {
+        //     wasm_bindgen_futures::spawn_local(async move {
+        //         state.load_event(&date).await;
+        //     });
+        // });
     }
 
     let event = state.reducer.current_event.clone();
